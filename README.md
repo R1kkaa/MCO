@@ -14,7 +14,7 @@ For displaying components or whatever put them in index.css<br/>
 const App = () => {<br/>
   return (<br/>
     <body><br/>
-    <Header /><br/>
+    <Header />
     "Remove everything here and insert components or whatever u want to display here" -> ideally place components here instead of html/css so we can reuse them as needed, and maybe 1 file per component, <br/>
                                                                                           so we don't have any merging conflicts/issues. What you can do is make 1 component per div that u have to display or<br/>
                                                                                           whatever as needed, for button interactivity or connecting the webpages, i can do it na, what's important is you guys <br/>
