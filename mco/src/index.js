@@ -7,7 +7,9 @@ import reportWebVitals from './reportWebVitals';
 
 const App = () => {
   return (
+    <body>
     <Header />
+    </body>
   );
 };
 
