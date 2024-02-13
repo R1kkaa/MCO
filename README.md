@@ -1,5 +1,5 @@
 Fork the repository and do your own parts, we can merge them later.
-
+for components: I used https://mui.com/material-ui/
 
 To Run:
 Prerequisites: Install Node.js / Have NPM installed on your pc.
