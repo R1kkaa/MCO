@@ -1,0 +1,8 @@
+.buttongroup{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 26%;
+    
+}
