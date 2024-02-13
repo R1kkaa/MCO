@@ -11,7 +11,4 @@ Steps: <br/>
 4: for any errors just msg me and i'll reply ASAP.<br/>
 
 For displaying components or whatever put them in index.css: <br/>
-In the, const App <br/>
-add whatever component u want to display after the header component. <br/>
-Ideally, all of these should be components so we can reuse them, or show and hide them easily. <br/>
-For interactivity, like doing the button functions I can probably do it. <br/>
+In the, const App add whatever component u want to display after the header component. Ideally, all of these should be components so we can reuse them, or show and hide them easily. For interactivity, like doing the button functions I can probably do it. 
