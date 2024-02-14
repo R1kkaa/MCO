@@ -8,6 +8,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 export function Body(){
   return(
@@ -36,6 +37,9 @@ const RegisterButton = styled(Button)(({ theme }) => ({
 }));
 
 function BoxSx() {
+  const navigate = useNavigate();
+  const loguser = () => {navigate('/home/main')};
+
   return (
     <ThemeProvider theme={Theme}>
     <Box
@@ -54,9 +58,9 @@ function BoxSx() {
           <TextField id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput2">      
-          <TextField id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <TextField id="password" type="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
-        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} href="/main">
+        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} onClick={loguser}>
             Login</RegisterButton>
         </div>
         
