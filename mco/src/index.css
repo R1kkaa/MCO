@@ -3,4 +3,68 @@ body {
     -webkit-font-smoothing: antialiased;
   background: url("images/bg.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
+  scrollbar-width: none;
+  
+}
+.carousel {
+  position: fixed;
+  margin-top: 3%;
+  margin-right: 120%;
+}
+
+.registerbox {
+  position: fixed;
+  margin-top: 1.5%;
+  margin-left: 50%;
+}
+
+.maindiv {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.register{
+  padding-top: 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  vertical-align: middle;
+  padding-bottom: 20px;
+}
+.register2{
+  padding-top: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  vertical-align: middle;
+  padding-bottom: 20px;
+}
+.registerinput1{
+  display: flex;
+  padding-top: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 5px;
+}
+.registerinput2{
+  display: flex;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 5px;
+}
+
+@font-face {
+  font-family: 'Italiana-Regular';
+  src: local('Italiana-Regular'), url(./fonts/Italiana-Regular.ttf) format('ttf');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
 }

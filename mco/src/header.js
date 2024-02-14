@@ -10,6 +10,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from 'prop-types';
 import Slide from '@mui/material/Slide';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
+import {Theme} from'./themes';
+import { ThemeProvider } from '@mui/material/styles';
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -45,6 +47,7 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(1),
     width: 'auto',
   },
+  fontFamily: 'Italiana-Regular',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -60,6 +63,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'black',
   width: '100%',
+  fontFamily: 'Italiana-Regular',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
@@ -67,7 +71,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     [theme.breakpoints.up('sm')]: {
       width: '20ch',
       '&:focus': {
-        width: '55ch',
+        width: '50ch',
       },
     },
   },
@@ -80,12 +84,15 @@ const HeaderButton = styled(Button)(({ theme }) => ({
     color: 'black',
   },
   width: 150, 
+  fontFamily: 'Italiana-Regular',
+  
 }));
+
 export default function Header() {
   return (
     <Box sx={{ flexGrow: 1}} >
       <HideOnScroll>
-      <AppBar position="static" style={{ background: 'transparent', boxShadow: 'none', paddingLeft: '300px',}}>
+      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none', paddingLeft: '300px',}}>
         <Toolbar >
           <Search>
             <SearchIconWrapper>
@@ -97,8 +104,12 @@ export default function Header() {
             />
           </Search>
           <span class="buttongroup">
-          <HeaderButton>Register</HeaderButton>
-          <HeaderButton>Login</HeaderButton>
+          <ThemeProvider theme={Theme}>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Register</HeaderButton>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Login</HeaderButton>
+            </ThemeProvider>
           </span>
         </Toolbar>
       </AppBar>
