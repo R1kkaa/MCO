@@ -11,13 +11,13 @@ body {
 .carousel {
   position: fixed;
   margin-top: 3%;
-  margin-right: 120%;
+  margin-left: -6%;
 }
 
 .registerbox {
   position: fixed;
   margin-top: 1.5%;
-  margin-left: 50%;
+  margin-left: 65%;
 }
 
 .maindiv {
@@ -26,6 +26,7 @@ body {
   justify-content: space-around;
 }
 .register{
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,7 +55,7 @@ body {
   display: flex;
   padding-top: 20px;
   padding-bottom: 20px;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   padding-left: 20px;
   padding-right: 20px;

@@ -11,6 +11,12 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import { useState } from 'react';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { useSearchParams } from 'react-router-dom';
+import {emails} from './util';
+import {passwords} from './util';
+import {username} from './util';
 
 export function Body(){
   return(
@@ -50,12 +56,9 @@ function BoxSx() {
   const passwordRef = useRef(); //creating a refernce for TextField Component
   const [valid, setValid] = useState(1);
   const loguser = () => {
-    const emails = ["1@gmail.com","2@gmail.com","3@gmail.com","4@gmail.com","5@gmail.com"];
-    const passwords = ["12345","23451","34512","45123","51234"];
-
     for(var i=0; i < 5; i++){
-      if(emails[i] == emailRef.current.value && passwords[i] == passwordRef.current.value)
-        navigate('/home/main', {state:{id:{i},}})
+      if(emails[i] == emailRef.current.value || username[i] == emailRef.current.value && passwords[i] == passwordRef.current.value)
+      navigate('/home/main?userid='.concat(String(i)), {state:{id:i}})
     }    
     setValid(0);
   };
@@ -81,8 +84,9 @@ function BoxSx() {
         </span>
         <span class="registerinput2">      
           <ThemeTextField error={valid==0} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+        <FormControlLabel control={<Checkbox defaultChecked color="secondary"/>} label="Remember me?" />
         </span>
-        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} href="/home/main" onClick={loguser}>
+        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} onClick={loguser}>
             Login</RegisterButton>
         </div>
         
