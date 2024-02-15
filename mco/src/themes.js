@@ -6,12 +6,12 @@ export const Theme = createTheme({
       primary: {
         light: '#F2b85f',
         main: '#F19E23',
-        dark: '##8c5808',
+        dark: '#8c5808',
       },
       secondary:{
-        light: '#B48947',
-        main: '#000000',
-        dark: '#000000'
+        light: '#FFCD82',
+        main: '#8c5808',
+        dark: '#8c5808'
       },
       error: {
         light: '#e57373',

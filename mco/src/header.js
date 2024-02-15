@@ -78,12 +78,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 const HeaderButton = styled(Button)(({ theme }) => ({
   color: '#454545',
-  backgroundColor: '#F19E23',
+  backgroundColor: Theme.palette.primary.main, 
   '&:hover': {
     backgroundColor: '#bf7e1d',
     color: 'black',
   },
-  width: 150, 
+  minWidth: '150px', 
   fontFamily: 'Italiana-Regular',
   
 }));
@@ -109,6 +109,37 @@ export default function Header() {
             Register</HeaderButton>
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
             Login</HeaderButton>
+            </ThemeProvider>
+          </span>
+        </Toolbar>
+      </AppBar>
+      </HideOnScroll>
+    </Box>
+  );
+}
+export function Header2(props) {
+  return (
+    <Box sx={{ flexGrow: 1}} >
+      <HideOnScroll>
+      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none', paddingLeft: '300px',}}>
+        <Toolbar >
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search Restaurants         |         Cuisine         |         Food"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+          <span class="buttongroup2">
+          <ThemeProvider theme={Theme}>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Submit Restaurant</HeaderButton>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Profile</HeaderButton>
+            <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Sign Out</HeaderButton>
             </ThemeProvider>
           </span>
         </Toolbar>

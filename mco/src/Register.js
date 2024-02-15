@@ -5,13 +5,13 @@ import Carousel from './carousel'
 import { Box, Typography} from '@mui/material';
 import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import {ThemeTextField} from './Login';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
 
 export function Body(){
   return(
-  <body>
+  <React.Fragment>
   <span class="maindiv">
   <span class="carousel">
   <Carousel />
@@ -20,7 +20,7 @@ export function Body(){
   <BoxSx></BoxSx>
   </span>
   </span>
-  </body>
+  </React.Fragment>
   );
 };
 const RegisterButton = styled(Button)(({ theme }) => ({
@@ -43,28 +43,28 @@ function BoxSx() {
           width: 500,
           height: 600,
           borderRadius: 1,
-          bgcolor: 'primary.main',
+          bgcolor: 'primary.light',
           boxShadow: '3px 5px 9px #000000',
           alignItems: 'center',
         }}
       >
         <div class="register">
-          <Typography variant='h3'>Register Account</Typography>
+          <Typography variant='h3' color="primary.dark">Register Account</Typography>
         <span class="registerinput1">      
-          <TextField id="fname" size="small" label="First Name" variant="filled" color="secondary" sx={{opacity: 1}}/>
-          <TextField id="lname" size="small" label="Last Name" variant="filled" color="secondary" sx={{opacity: 1}}/>
+          <ThemeTextField id="fname" size="small" label="First Name" variant="filled" color="secondary" sx={{opacity: 1}}/>
+          <ThemeTextField id="lname" size="small" label="Last Name" variant="filled" color="secondary" sx={{opacity: 1}}/>
         </span>
         <span class="registerinput1">      
-          <TextField id="email" size="small" label="Email" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField id="email" size="small" label="Email" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput1">      
-          <TextField id="username" size="small" label="Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField id="username" size="small" label="Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput1">      
-          <TextField id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField id="password" size="small" type="password" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput2">      
-          <TextField id="email" size="small" label="Retpye Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField id="email" size="small" type="password" label="Retype Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} href="/home/login">
             Register </RegisterButton>

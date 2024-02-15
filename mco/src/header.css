@@ -7,6 +7,15 @@
     font-family: Italiana-Regular;
     
 }
+.buttongroup2{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 42%;
+    font-family: Italiana-Regular;
+    
+}
 @font-face {
     font-family: 'Italiana-Regular';
     src: local('Italiana-Regular'), url(./fonts/Italiana-Regular.ttf) format('ttf');

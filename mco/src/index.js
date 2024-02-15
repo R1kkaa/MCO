@@ -6,12 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {Body as Register} from './Register';
 import {Body as Login} from './Login';
+import {Body as View} from './RestaurantPreview';
+import { Header2 } from './header';
 
 export const App = () => {
   return (
     <Routes>
-    <Route exact path="/home/register" element={<><Header/><Register/></>}/>
-    <Route exact path="/home/login" element={<><Header/><Login/></>}/>
+    <Route  path="/home/register" element={<><Header/><Register/></>}/>
+    <Route path="/home/login" element={<><Header/><Login/></>}/>
+    <Route path="/home/main" element={<><Header2/><View/></>}/>
     </Routes>
   );
 };
