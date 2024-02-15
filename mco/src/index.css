@@ -5,6 +5,7 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   scrollbar-width: none;
+  background-color: white;
   
 }
 .carousel {
@@ -25,7 +26,6 @@ body {
   justify-content: space-around;
 }
 .register{
-  padding-top: 12%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,7 +44,6 @@ body {
 }
 .registerinput1{
   display: flex;
-  padding-top: 10px;
   flex-direction: row;
   justify-content: space-between;
   padding-left: 20px;
@@ -53,7 +52,7 @@ body {
 }
 .registerinput2{
   display: flex;
-  padding-top: 10px;
+  padding-top: 20px;
   padding-bottom: 20px;
   flex-direction: row;
   justify-content: space-between;
@@ -61,10 +60,26 @@ body {
   padding-right: 20px;
   margin: 5px;
 }
+.centercol{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  vertical-align: middle;
+  justify-content: space-between;
+  margin:auto;
+  width:90%;
+}
 
 @font-face {
   font-family: 'Italiana-Regular';
   src: local('Italiana-Regular'), url(./fonts/Italiana-Regular.ttf) format('ttf');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
+@font-face {
+  font-family: 'Roboto-Thin';
+  src: local('Roboto-Thin'), url(./fonts/Roboto-Thin.ttf) format('ttf');
   /* other formats include: 'woff2', 'truetype, 'opentype',
                             'embedded-opentype', and 'svg' */
 }

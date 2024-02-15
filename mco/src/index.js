@@ -8,6 +8,7 @@ import {Body as Register} from './Register';
 import {Body as Login} from './Login';
 import {Body as View} from './RestaurantPreview';
 import { Header2 } from './header';
+import 'typeface-roboto'
 
 export const App = () => {
   return (

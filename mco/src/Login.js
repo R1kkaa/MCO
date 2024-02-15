@@ -8,6 +8,9 @@ import { ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import { useState } from 'react';
 
 export function Body(){
   return(
@@ -31,7 +34,8 @@ const RegisterButton = styled(Button)(({ theme }) => ({
     color: 'black',
   },
   width: 150, 
-  fontFamily: 'Italiana-Regular',
+  fontFamily: 'Roboto',
+  fontWeight: '400',
   
 }));
 export const ThemeTextField = styled(TextField)({
@@ -41,6 +45,23 @@ export const ThemeTextField = styled(TextField)({
 });
 
 function BoxSx() {
+  const navigate = useNavigate();
+  const emailRef = useRef(); //creating a refernce for TextField Component
+  const passwordRef = useRef(); //creating a refernce for TextField Component
+  const [valid, setValid] = useState(1);
+  const loguser = () => {
+    const emails = ["1@gmail.com","2@gmail.com","3@gmail.com","4@gmail.com","5@gmail.com"];
+    const passwords = ["12345","23451","34512","45123","51234"];
+
+    for(var i=0; i < 5; i++){
+      if(emails[i] == emailRef.current.value && passwords[i] == passwordRef.current.value)
+        navigate('/home/main', {state:{id:{i},}})
+    }    
+    setValid(0);
+  };
+  const typevalid = () => {
+    setValid(1)
+  }
   return (
     <ThemeProvider theme={Theme}>
     <Box
@@ -54,14 +75,14 @@ function BoxSx() {
         }}
       >
         <div class="register2">
-          <Typography variant='h3' color="primary.dark">Login Account</Typography>
+          <Typography variant='h3' color="primary.dark" fontFamily="Roboto" fontWeight="100">Login Account</Typography>
         <span class="registerinput1">      
-          <ThemeTextField id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch',  input: { color: 'primary.dark' } }}/>
+          <ThemeTextField error={valid==0 } onClick={typevalid} inputRef={emailRef} id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch',  input: { color: 'primary.dark' } }}/>
         </span>
         <span class="registerinput2">      
-          <ThemeTextField id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField error={valid==0} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
-        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} href="/home/main">
+        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} href="/home/main" onClick={loguser}>
             Login</RegisterButton>
         </div>
         

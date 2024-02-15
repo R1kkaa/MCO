@@ -12,7 +12,7 @@ import Slide from '@mui/material/Slide';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
-
+import logo from './images/logo.png';
 function HideOnScroll(props) {
   const { children, window } = props;
   const trigger = useScrollTrigger({
@@ -84,7 +84,8 @@ const HeaderButton = styled(Button)(({ theme }) => ({
     color: 'black',
   },
   minWidth: '150px', 
-  fontFamily: 'Italiana-Regular',
+  fontFamily: "Roboto" ,
+  fontWeight: "400"
   
 }));
 
@@ -92,8 +93,16 @@ export default function Header() {
   return (
     <Box sx={{ flexGrow: 1}} >
       <HideOnScroll>
-      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none', paddingLeft: '300px',}}>
+      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none'}}>
         <Toolbar >
+        <Box
+      component="img"
+      sx={{
+        height: '60px',
+        width: 'auto',
+      }}
+      src={logo}
+    />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -121,8 +130,16 @@ export function Header2(props) {
   return (
     <Box sx={{ flexGrow: 1}} >
       <HideOnScroll>
-      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none', paddingLeft: '300px',}}>
+      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none',}}>
         <Toolbar >
+        <Box
+      component="img"
+      sx={{
+        height: '60px',
+        width: 'auto',
+      }}
+      src={logo}
+    />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />

@@ -1,5 +1,10 @@
 import * as React from 'react';
 import { createTheme} from '@mui/material/styles';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import "./index.css";
 
 export const Theme = createTheme({
     palette: {
@@ -30,6 +35,9 @@ export const Theme = createTheme({
       }
     },
     typography:{
-      fontFamily: 'Italiana-Regular',
-    }
+      fontFamily: ['Roboto-Thin','Italiana-Regular','"Helvetica Neue"'].join(','),
+    },
+    shape: {
+      borderRadius: 8,
+    }, 
   });
