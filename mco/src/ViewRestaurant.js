@@ -14,7 +14,10 @@ import {ratings} from './util';
 import {reviews} from './util';
 import { ReadStarRating } from './RestaurantPreview';
 import Divider from '@mui/material/Divider';
-
+import {ButtonGroup} from '@mui/material';
+import { ReviewBox } from './RestaurantPreview';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 export const Body = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const id = searchParams.get('userid');   
@@ -113,10 +116,14 @@ export const Body = () => {
                     {review.user.charAt(0).toUpperCase()}
                   </UserIcon>
                   <Box ml={5}> 
-                    <Typography variant="h6">{review.user}</Typography>
+                    <Typography fontFamily="Roboto" variant="h6">{review.user}</Typography>
                     {ReadStarRating(review.rating)}
-                    <Typography>{review.review}</Typography>
+                    {ReviewBox(review.review, "Review")}
                   </Box>
+                  <ButtonGroup variant="outlined" aria-label="Basic button group">
+                    <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">Helpful</Typography></Button>
+                    <Button color="secondary" variant="outlined" aria-label="Unhelpful" startIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">Unhelpful</Typography></Button>
+                    </ButtonGroup>
                 </ReviewCard>
               ))}
             </ReviewsCard>

@@ -64,7 +64,7 @@ const Item = styled(Card, options)(({ theme=Theme, hoverShadow = 1 }) => ({
     boxShadow: theme.shadows[hoverShadow]},
 }));
 
-export function ReviewBox(Details){
+export function ReviewBox(Details, Title = "Featured Review", Edited = false){
   return(
     <ThemeProvider theme={Theme}>
     <Box         
@@ -78,9 +78,12 @@ export function ReviewBox(Details){
     marginLeft: '10px',
     marginTop: '10px',
     }}>
-      <Typography variant="subtitle2">{"Featured Review"}</Typography>
+      <Typography variant="subtitle2">{Title}{
+        Edited && " ( Edited )"
+      }
+      </Typography>
       <Divider sx={{ borderBottomWidth: 3}}/>
-      <Typography variant="caption">{Details}</Typography>
+      <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
       </Box>
     </ThemeProvider>
     )
@@ -103,14 +106,14 @@ export const Body = () => {
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurants.map((item, index) => (
         <CardActionArea href={"/home/main/restaurant?userid=".concat(String(id)).concat("&restaurantid=".concat(String(index)))}>
-      <Item hoverShadow={10}><Typography variant="h6" fontFamily="Roboto" fontWeight="300">
+      <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
         {item}
       </Typography>
-      <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{Location[index]}
+      <Typography variant="body2" fontFamily="Roboto" fontWeight="300">{location[index]}
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
       {ReadStarRating([ratings[index]])}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({reviews[index]} Reviews)</Typography>
-      {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+      {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
       </Item>
       </CardActionArea>
 
