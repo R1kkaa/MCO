@@ -10,7 +10,8 @@ import {Body as Register} from './Register';
 import {Body as Login} from './Login';
 import {Body as View} from './RestaurantPreview';
 import {Body as User} from './Profile';
-
+import {Body as Restaurant} from './ViewRestaurant';
+import {Body as Form} from './Form';
 import 'typeface-roboto'
 
 export const App = () => {
@@ -19,8 +20,9 @@ export const App = () => {
     <Route  path="/home/register" element={<><Header/><Register/></>}/>
     <Route path="/home/login" element={<><Header/><Login/></>}/>
     <Route path="/home/main" element={<><Header2/><View/></>}/>
+    <Route path="/home/form" element={<><Header2/><Form/></>}/>
     <Route path="/home/main/user" element={<><Header3/><User/></>}/>
-    <Route path="/home/main/restaurant" element={<><Header3/><User/></>}/>
+    <Route path="/home/main/restaurant" element={<><Header3/><Restaurant/></>}/>
 
     </Routes>
   );

@@ -7,9 +7,8 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useRef } from 'react';
-import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './RestaurantPreview.css';
   import Divider from '@mui/material/Divider';
 import Rating from '@mui/material/Rating';
@@ -20,6 +19,8 @@ import {restaurants} from './util'
 import {location} from './util'
 import {ratings} from './util'
 import {reviews} from './util'
+import Link from '@mui/material/Link';
+import CardActionArea from '@mui/material/CardActionArea';
 
 const options = {
   shouldForwardProp: (prop) => prop !== 'hoverShadow',
@@ -52,6 +53,7 @@ export function ReadStarRating(val){
 }
 
 const Item = styled(Card, options)(({ theme=Theme, hoverShadow = 1 }) => ({
+  key: 0,
   backgroundColor: Theme.palette.primary.light,
   padding: theme.spacing(1),
   textAlign: 'left',
@@ -83,13 +85,26 @@ export function ReviewBox(Details){
     </ThemeProvider>
     )
 }
+
 export const Body = () => {
+  let navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = searchParams.get('userid');  
+  const restaurantid = null;
+  function viewrestaurant(restaurant){
+    let link = "/home/main/user?userid="
+      link = link.concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
   return(
     <ThemeProvider theme={Theme}>
     <div class="maincontainer">
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurants.map((item, index) => (
-      <Item key={index} hoverShadow={10}><Typography variant="h6" fontFamily="Roboto" fontWeight="300">{item}
+        <CardActionArea href={"/home/main/restaurant?userid=".concat(String(id)).concat("&restaurantid=".concat(String(index)))}>
+      <Item hoverShadow={10}><Typography variant="h6" fontFamily="Roboto" fontWeight="300">
+        {item}
       </Typography>
       <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{Location[index]}
       </Typography>
@@ -97,6 +112,8 @@ export const Body = () => {
       {ReadStarRating([ratings[index]])}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({reviews[index]} Reviews)</Typography>
       {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
       </Item>
+      </CardActionArea>
+
     ))}
     
     </Stack>

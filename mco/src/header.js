@@ -165,7 +165,7 @@ export function Header2(props) {
           </Search>
           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/form">
             Submit Restaurant</HeaderButton>
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
             Profile</HeaderButton>
@@ -215,7 +215,7 @@ export function Header3(props) {
           </Search>
           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/form">
             Submit Restaurant</HeaderButton>
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
             Home</HeaderButton>

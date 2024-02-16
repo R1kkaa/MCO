@@ -1,11 +1,10 @@
 body {
   margin: 0;
     -webkit-font-smoothing: antialiased;
-  background: url("images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   scrollbar-width: none;
-  background-color: white;
+  background: url("images/bg.jpg");
   
 }
 .carousel {
@@ -29,6 +28,7 @@ body {
   padding-top: 20px;
   display: flex;
   flex-direction: column;
+  text-align: center;
   align-items: center;
   align-content: center;
   vertical-align: middle;

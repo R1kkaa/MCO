@@ -2,7 +2,7 @@ import React from 'react';
 import './Profile.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
-import { Box, Typography} from '@mui/material';
+import { Box, Stack, Typography} from '@mui/material';
 import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
@@ -17,6 +17,8 @@ import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
+import Card from '@mui/material/Card';
+import { ReviewBox } from './RestaurantPreview';
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -66,12 +68,24 @@ export function ProfileReviewBox(Details){
     )
 }
 
+const ReviewsCard = styled(Card)(({ theme }) => ({
+  backgroundColor: Theme.palette.primary.main,
+  textAlign: 'left',
+  color: '#000000',
+  fontFamily: 'Italiana-Regular',
+  maxHeight: '100%', 
+  maxWidth: '100%',
+  overflowY: 'auto', 
+}));
+
 export function Body(){
+
   return(
   <body>
   <span class="maindiv">
   <span class="profilebox">
-  <BoxSx></BoxSx>
+  <BoxSx>
+  </BoxSx>
   </span>
   </span>
   </body>
@@ -134,9 +148,13 @@ function BoxSx() {
 
         <div>
           <div class="rightboxdiv">
-            <div class="review-text">
-              Reviews and Comments
-            </div>
+            <div class="descriptioncontainer2">
+              <Typography variant="h6">Reviews and Comments</Typography>
+  {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+  {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+  {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+  {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+  </div>
           </div>
         </div>
       </div>

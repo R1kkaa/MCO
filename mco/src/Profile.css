@@ -1,15 +1,25 @@
 body {
   margin: 0;
     -webkit-font-smoothing: antialiased;
-  background: url("images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   scrollbar-width: none;
+  height: 80%;
 }
 
 .descriptioncontainer {
   text-align: justify;
   padding: 10px 20px;
+  overflow-y: auto;
+  max-height: 260px;
+  word-wrap: break-word;
+
+}
+.descriptioncontainer2 {
+  text-align: justify;
+  padding: 10px 20px;
+  overflow-y: auto;
+  max-height: 260px;
 }
 
 .mainboxdiv {

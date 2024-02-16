@@ -1,5 +1,5 @@
 //Restaurant Details
-export var restaurants = ["Jollibee","McDonalds","KFC","Bonchon"];
+export var restaurants = ["Jollibee","McDonalds","KFC","Bonchon","24 Chicken"];
 export const location = ["Taft, Manila City","Taft, Manila City","Taft, Manila City","Taft, Manila City"];
 export const ratings = [4.5,5,5,5,5];
 export const reviews = [2,2,2,2,2];
