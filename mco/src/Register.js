@@ -8,7 +8,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import {ThemeTextField} from './Login';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
-
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -21,7 +20,7 @@ export const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function InputFileUpload() {
+export function InputFileUpload() {
   return (
     <RegisterButton component="label" variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}}>
     Upload Avatar 
@@ -89,7 +88,7 @@ function BoxSx() {
           <ThemeTextField id="retypepassword" size="small" type="password" label="Retype Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput2">      
-          <ThemeTextField id="description" size="small" multiline rows={4} label="Short Description (Optional)" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField id="description" size="small" multiline maxRows={4} rows={4} label="Short Description (Optional)" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="centercol">
         {InputFileUpload()}

@@ -26,7 +26,7 @@ const options = {
   shouldForwardProp: (prop) => prop !== 'hoverShadow',
 };
 
-const StyledRating = styled(Rating)({
+export const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
   },
@@ -77,6 +77,8 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false){
     padding: '10px',
     marginLeft: '10px',
     marginTop: '10px',
+    marginBottom: '10px',
+
     }}>
       <Typography variant="subtitle2">{Title}{
         Edited && " ( Edited )"

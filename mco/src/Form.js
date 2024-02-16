@@ -11,7 +11,9 @@ import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select,{ SelectChangeEvent } from '@mui/material/Select';
+import Select,{ SelectChangeEvent } from '@mui/material/Select'
+import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';;
 
 export function Body(){
   return(
@@ -41,6 +43,15 @@ const RegisterButton = styled(Button)(({ theme }) => ({
   }));
 
 function BoxSx() {
+  let navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = searchParams.get('userid');  
+    function viewprofile(){
+    let link = "/home/main?userid="
+      link = link.concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
   return (
     <ThemeProvider theme={Theme}>
     <Box
@@ -70,7 +81,7 @@ function BoxSx() {
           <ThemeTextField id="username" size="small" label="Restaurant Description" placeholder = "Tell us more about this place..." multiline rows = {6} variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         
-        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} href="/home/main">
+        <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} onClick={viewprofile}>
             Submit </RegisterButton>
         </div>
       </Box>

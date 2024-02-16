@@ -13,8 +13,7 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
 import logo from './images/logo.png';
-import { useLocation, useNavigate } from 'react-router-dom';
-import stringuserid from './util';
+import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -79,7 +78,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-const HeaderButton = styled(Button)(({ theme }) => ({
+export const HeaderButton = styled(Button)(({ theme }) => ({
   color: '#454545',
   backgroundColor: Theme.palette.primary.main, 
   '&:hover': {
@@ -115,8 +114,10 @@ export default function Header() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <span class="buttongroup">
+          <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/main?userid=null">
+            Home</HeaderButton>
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
             Register</HeaderButton>
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
@@ -136,10 +137,17 @@ export function Header2(props) {
   const id = searchParams.get('userid');  
   function viewprofile(){
     let link = "/home/main/user?userid="
+      link = link.concat(String(id)).concat("&viewuserid=").concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
+  function viewform(){
+    let link = "/home/form?userid="
       link = link.concat(String(id))
     navigate(link, {state:{id:id}})
     return null;
   }
+
 
   return (
     <Box sx={{ flexGrow: 1}} >
@@ -165,12 +173,23 @@ export function Header2(props) {
           </Search>
           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/form">
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewform}>
             Submit Restaurant</HeaderButton>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
-            Profile</HeaderButton>
-            <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Sign Out</HeaderButton>
+          {id >= 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
+            Profile</HeaderButton>}
+            {id >= 0 &&           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Sign Out</HeaderButton>}
+            {
+            id < 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Sign Out</HeaderButton> 
+          }{
+            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Register</HeaderButton> 
+          }{
+            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Login</HeaderButton> 
+          }
+          
             </ThemeProvider>
           </span>
         </Toolbar>
@@ -190,7 +209,13 @@ export function Header3(props) {
     navigate(link, {state:{id:id}})
     return null;
   }
-  
+  function viewform(){
+    let link = "/home/form?userid="
+      link = link.concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
+
   return (
     <Box sx={{ flexGrow: 1}} >
       <HideOnScroll>
@@ -213,14 +238,82 @@ export function Header3(props) {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <span class="buttongroup2">
+           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/form">
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewform}>
             Submit Restaurant</HeaderButton>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
+          {id >= 0 ?           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
+            Home</HeaderButton> : <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Register</HeaderButton>}
+            {id >= 0 ?           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Sign Out</HeaderButton> : <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Login</HeaderButton>}
+            </ThemeProvider>
+          </span>
+        </Toolbar>
+      </AppBar>
+      </HideOnScroll>
+    </Box>
+  );
+}
+export function Header4(props) {
+
+  let navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = searchParams.get('userid');  
+    function viewhome(){
+    let link = "/home/main?userid="
+      link = link.concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
+  function viewprofile(){
+    let link = "/home/main/user?userid="
+      link = link.concat(String(id)).concat("&viewuserid=").concat(String(id))
+    navigate(link, {state:{id:id}})
+    return null;
+  }
+
+  return (
+    <Box sx={{ flexGrow: 1}} >
+      <HideOnScroll>
+      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none',}}>
+        <Toolbar >
+        <Box
+      component="img"
+      sx={{
+        height: '60px',
+        width: 'auto',
+      }}
+      src={logo}
+    />
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search Restaurants         |         Cuisine         |         Food"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+           <span class="buttongroup2">
+          <ThemeProvider theme={Theme}>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewhome}>
             Home</HeaderButton>
-            <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Sign Out</HeaderButton>
+          {id >= 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
+            Profile</HeaderButton>}
+            {id >= 0 &&           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+            Sign Out</HeaderButton>}
+            {
+            id < 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Sign Out</HeaderButton> 
+          }{
+            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Register</HeaderButton> 
+          }{
+            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
+            Login</HeaderButton> 
+          }
             </ThemeProvider>
           </span>
         </Toolbar>

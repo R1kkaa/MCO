@@ -1,5 +1,6 @@
 import React from 'react';
 import './Profile.css';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Stack, Typography} from '@mui/material';
@@ -20,9 +21,8 @@ import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
 import { ReviewBox } from './RestaurantPreview';
 import { useNavigate } from 'react-router-dom';
-import { restaurantreviews } from './util';
-import {restaurants as restaurantnames} from './util';
-
+import {ThemeTextField} from './Login';
+import { InputFileUpload } from './Register';
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
@@ -70,17 +70,6 @@ export function ProfileReviewBox(Details){
     </ThemeProvider>
     )
 }
-
-const ReviewsCard = styled(Card)(({ theme }) => ({
-  backgroundColor: Theme.palette.primary.main,
-  textAlign: 'left',
-  color: '#000000',
-  fontFamily: 'Italiana-Regular',
-  maxHeight: '100%', 
-  maxWidth: '100%',
-  overflowY: 'auto', 
-}));
-
 export function Body(){
 
   return(
@@ -94,32 +83,6 @@ export function Body(){
   </body>
   );
 };
-function ReviewBoxWithStar(Details, Rating, Title = "Featured Review", Edited = false){
-  return(
-    <ThemeProvider theme={Theme}>
-    <Box         
-    sx={{
-    width: 500,
-    height: 150,
-    borderRadius: 1,
-    bgcolor: 'primary.main',
-    alignItems: 'center',
-    padding: '10px',
-    marginLeft: '10px',
-    marginTop: '10px',
-    marginBottom: '10px',
-
-    }}>
-      <Typography variant="h6" display="inline">{Title}{
-        Edited && " ( Edited )"
-      }{ReadStarRating(Rating)}
-      </Typography>
-      <Divider sx={{ borderBottomWidth: 3}}/>
-      <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
-      </Box>
-    </ThemeProvider>
-    )
-}
 
 const RegisterButton = styled(Button)(({ theme }) => ({
   color: '#454545',
@@ -128,33 +91,23 @@ const RegisterButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#bf7e1d',
     color: 'black',
   },
-  width: 150, 
-  fontFamily: 'Italiana-Regular',
-  
-}));
-const HeaderButton = styled(Button)(({ theme }) => ({
-  color: '#454545',
-  backgroundColor: Theme.palette.primary.light, 
-  '&:hover': {
-    backgroundColor: '#bf7e1d',
-    color: 'black',
-  },
-  minWidth: '150px', 
+  width: 200, 
   fontFamily: "Roboto" ,
   fontWeight: "400"
   
 }));
 function BoxSx() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-  const loggedid = searchParams.get('viewuserid');  
+  const id = searchParams.get('viewuserid');  
+  const loggedid = searchParams.get('userid');  
   let navigate = useNavigate();
     function viewprofile(){
-    let link = "/home/main/user/editprofile?userid="
+    let link = "/home/main?userid="
       link = link.concat(String(id))
     navigate(link, {state:{id:id}})
     return null;
   }
+
   return (
     <ThemeProvider theme={Theme}>
     <Box
@@ -177,49 +130,55 @@ function BoxSx() {
           objectFit: 'cover',
           }}
       />
-      <div class="mainboxdiv">
+      <div class="editmainboxdiv">
         <div class="picturebox">
-            <img class="profilepic" src="https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="/>
-            <div class="descriptioncontainer">
-                <p> {desc[id]} </p>
-            </div>
+            <form id="profileForm" enctype="multipart/form-data">
+                <img id="profileImage" class="profilepic" src="https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="/>
+            </form>
         </div>
-      
-        <div>
-            <div class="namecontainer">
-            {name[id]}<br/>
-{
-  id==loggedid &&             <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '340px'}} onClick={viewprofile}>Edit Profile</HeaderButton>      
-}
-            </div>
-            <div class="usernamecontainer">
-            {username[id]}<br/>
-            </div>
-
-        </div>
-
-        <span>
-          <div class="rightboxdiv">
-            <div class="descriptioncontainer2">
-              <Typography variant="h6">Reviews and Comments</Typography>   
-              {restaurantreviews.map((restaurantreview, restaurantindex) => (
-                restaurantreview.map((reviews,reviewindex) => (
-                  reviews.userid == id && 
-                  <span>
-                  {ReviewBoxWithStar(reviews.review, reviews.rating, restaurantnames[restaurantindex])}
-                  </span>
-                ))
-              ))}
-  </div>
-          </div>
-        </span>
+        
+        <BoxSx2></BoxSx2>
       </div>
         
     </Box>
     </ThemeProvider>
   );
 }
+function BoxSx2() {
+  const navigate = useNavigate();
+  return (
+    <ThemeProvider theme={Theme}>
+    <Box
+        sx={{
+          width: 600,
+          height: 600,
+          marginLeft: '100px',
+          marginTop: '-225px',
+          borderRadius: 1,
+          bgcolor: 'primary.light',
+          boxShadow: '3px 5px 9px #000000',
+          alignItems: 'center',
+        }}
+      >
+        <div class="editdiv">
+        <Typography variant="h2" fontFamily="Roboto" color="secondary">Edit Profile</Typography>     
 
+        <span class="registerinput1"> 
+          <ThemeTextField  id="email" size="small" label="Username" variant="filled" color="secondary" sx={{opacity: 1, width: '65ch',  input: { color: 'primary.dark' } }}/>
+        </span>
+        <span class="registerinput2">      
+          <ThemeTextField multiline row={4} maxRows={4} id="description" size="small" label="Description" variant="filled" color="secondary" sx={{opacity: 1, width: '65ch'}}/>
+        </span>
+        <span class="centercol">        {InputFileUpload()}
+<RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}}>
+    Save </RegisterButton></span>
+
+        </div>
+        
+      </Box>
+      </ThemeProvider>
+  );
+}
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

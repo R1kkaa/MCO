@@ -7,13 +7,16 @@ body {
   height: 80%;
 }
 
+.choosefile-pfp {
+  margin-left: 1px;
+}
+
 .descriptioncontainer {
   text-align: justify;
   padding: 10px 20px;
   overflow-y: auto;
-  max-height: 260px;
+  max-height: 200px;
   word-wrap: break-word;
-
 }
 .descriptioncontainer2 {
   text-align: justify;
@@ -22,8 +25,31 @@ body {
   max-height: 260px;
 }
 
+.edit-username {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid rgba(151, 100, 7, 0.681);
+  background-color: #FFBF5F;
+}
+.editdiv{
+  padding: 10px;
+  padding-top: 50px;
+  display: flex;
+  align-items: center;
+  vertical-align: center;
+  flex-direction: column;
+}
 .mainboxdiv {
   margin-left: 4%;
+}
+
+.editmainboxdiv {
+  margin-left: 4%;
+  display: flex;
+  flex-direction: row;
 }
 
 .rightboxdiv {
@@ -47,7 +73,17 @@ body {
  font-weight: bold;
  color: rgb(246, 241, 235);
  text-shadow: 2px 2px 8px black;
+ display: flex;
 }
+.editnamecontainer {
+  text-align: left;
+  margin-top: -31%;
+  margin-left: 35%;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+ }
+
 
 .usernamecontainer {
   text-align: left;
@@ -56,6 +92,15 @@ body {
   font-size: 38px;
   font-weight: normal;
   color: rgb(246, 241, 235);
+
+ }
+
+ .usernamecontainer-edit {
+  text-align: left;
+  margin-top: 0%;
+  margin-left: 35%;
+  font-size: 18px;
+  font-weight: normal;
   text-shadow: 2px 2px 8px black;
  }
 
@@ -126,24 +171,35 @@ body {
   vertical-align: middle;
   padding-bottom: 20px;
 }
-.profileinput1{
-  display: flex;
-  padding-top: 10px;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 5px;
+
+.savechanges {
+  margin-left: 1045px;
+  background-color: #FFBF5F;
+  border-radius: 5px;
 }
-.profileinput2{
-  display: flex;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 5px;
+
+textarea {
+  width: 95%;
+  min-height: 150px;
+  resize: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: #666;
+  &:focus {
+    outline: none;
+    border: 1px solid darken(#ddd, 5%);
+    box-shadow: inset 0 0 0.5rem darken(#FFBF5F, 5%);
+  }
+  &[placeholder] { 
+    font-style: italic;
+    font-size: 0.775rem;
+  }
+}
+
+#the-count {
+  float: right;
+  padding: 0.1rem 0 0 0;
+  font-size: 0.825rem;
 }
 
 @font-face {

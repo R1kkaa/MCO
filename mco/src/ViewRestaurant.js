@@ -1,7 +1,7 @@
 import React from 'react';
 import reportWebVitals from './reportWebVitals';
 import './RestaurantPreview.css';
-import { Box, Typography, Button, Rating, CardMedia, Avatar } from '@mui/material';
+import { Box, Typography, Button, Rating, CardMedia, Avatar, TextField } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { Theme } from './themes';
 import Card from '@mui/material/Card';
@@ -18,24 +18,27 @@ import {ButtonGroup} from '@mui/material';
 import { ReviewBox } from './RestaurantPreview';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import { StyledRating } from './RestaurantPreview';
+import Input from '@mui/material/Input';
+import { HeaderButton } from './header';
+import { name } from './util';
+import { restaurantreviews } from './util';
+import {restaurants as restaurantnames} from './util';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
+import Collapse from '@mui/material/Collapse';
+
 export const Body = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const id = searchParams.get('userid');   
-    const restaurantid = searchParams.get('restaurantid');   
-
-     const restaurants = [
-    {
-      name: names[restaurantid],
-      reviews: [
-        { user: "John", rating: 4, review: "Great food and service!" },
-        { user: "Jane", rating: 5, review: "Best chickenjoy ever!" },
-        { user: "Joshua", rating: 0, review: "Naholdap ako!" },
-        { user: "Jules", rating: 1, review: "Masungit yung mga cashier!" },
-        { user: "Jan", rating: 3, review: "Najumpscare ako ni Freddy Fazbear sa loob" },
-
-      ]
-    },
-  ];
+    const restaurantid = searchParams.get('restaurantid');  
+    const [value, setValue] = React.useState(0);    
+    const [expanded, setExpanded] = React.useState(false);
+    const handleExpandClick = () => {
+      setExpanded(!expanded);
+    };
 
   const NameCard = styled(Card)(({ theme }) => ({
     backgroundColor: Theme.palette.primary.main,
@@ -88,14 +91,35 @@ export const Body = () => {
     top: theme.spacing(1),
     left: theme.spacing(1),
   }));
-
+function EstablishmentResponse(Details, Title = "Establishment Owner's Response", Edited = false){
+    return(
+      <ThemeProvider theme={Theme}>
+      <Box         
+      sx={{
+      width: 500,
+      height: 100,
+      borderRadius: 1,
+      bgcolor: 'primary.light',
+      alignItems: 'center',
+      padding: '10px',
+      marginLeft: '40px',
+      marginBottom: '10px',
+      }}>
+        <Typography variant="subtitle2">{Title}{
+          Edited && " ( Edited )"
+        }
+        </Typography>
+        <Divider sx={{ borderBottomWidth: 3, bgcolor: "primary.main"}}/>
+        <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
+        </Box>
+      </ThemeProvider>
+      )
+  }
   return (
     <ThemeProvider theme={Theme}>
       <div className="maincontainer">
-        {restaurants.map((restaurant, index) => (
-          <div key={index}>
             <NameCard>
-              <Typography fontFamily="Roboto"variant="h4">{restaurant.name}</Typography>
+              <Typography fontFamily="Roboto"variant="h4">{restaurantnames[restaurantid]}</Typography>
               <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{location[restaurantid]}
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
@@ -106,30 +130,70 @@ export const Body = () => {
               <CustomCardMedia
                 component="img"
                 src={mapImage}                
-                alt={`${restaurant.name} Map`}
               />
             </ContentCard>
+            <div class="user-review">
+              <div class = "user-comment">
+                <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
+              </div>
+              <div class = "review-buttons">
+                <StyledRating precision={0.5} name="simple-controlled" value={value} onChange={(event, newValue) => {setValue(newValue);}}/>
+                <HeaderButton>Upload File</HeaderButton>
+                <HeaderButton>Comment</HeaderButton>
+              </div>
+            </div> 
             <ReviewsCard>
-              {restaurant.reviews.map((review, reviewIndex) => (
+              {restaurantreviews[restaurantid].map((review, reviewIndex) => (
                 <ReviewCard key={reviewIndex}>
                   <UserIcon>
-                    {review.user.charAt(0).toUpperCase()}
+                    {name[review.userid].charAt(0).toUpperCase()}
                   </UserIcon>
                   <Box ml={5}> 
-                    <Typography fontFamily="Roboto" variant="h6">{review.user}</Typography>
+                    <Typography fontFamily="Roboto" variant="h6">{name[review.userid]}</Typography>
                     {ReadStarRating(review.rating)}
                     {ReviewBox(review.review, "Review")}
+                    {EstablishmentResponse("Thank You!")}
                   </Box>
                   <ButtonGroup variant="outlined" aria-label="Basic button group">
-                    <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">Helpful</Typography></Button>
-                    <Button color="secondary" variant="outlined" aria-label="Unhelpful" startIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">Unhelpful</Typography></Button>
+                    {
+                        id < 0 && id !=review.userid                   
+                        && <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto">Reply As Owner</Typography></Button>
+                    }{
+                        id >= 0 && id !=review.userid && (
+                            <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
+                              )
+                    }
+                  {
+                      id >= 0 && id !=review.userid && (
+                            <Button color="secondary" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
+                            )
+                    }{ id == review.userid && (
+                      <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={handleExpandClick}>Edit</Typography></Button>
+                    )
+                    }{ id == review.userid && (
+                      <Button color="secondary" variant="outlined" aria-label="Delete" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto">Delete</Typography></Button>
+                    )
+                    }{
+                      id == "null" && (
+                          <Button color="secondary" href="/home/register" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
+                            )
+                  }
+                {
+                    id == "null" && (
+                          <Button color="secondary" href="/home/register" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
+                          )
+                  }
+
+
                     </ButtonGroup>
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    {id == review.userid && <Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
+                    {id == review.userid && <Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                      </Collapse>
                 </ReviewCard>
               ))}
             </ReviewsCard>
           </div>
-        ))}
-      </div>
     </ThemeProvider>
   );
 };
