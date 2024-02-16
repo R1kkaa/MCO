@@ -21,7 +21,7 @@ import {ratings} from './util'
 import {reviews} from './util'
 import Link from '@mui/material/Link';
 import CardActionArea from '@mui/material/CardActionArea';
-
+import { restaurantreviews as featurereviews } from './util';
 const options = {
   shouldForwardProp: (prop) => prop !== 'hoverShadow',
 };
@@ -115,7 +115,7 @@ export const Body = () => {
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
       {ReadStarRating([ratings[index]])}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({reviews[index]} Reviews)</Typography>
-      {ReviewBox("Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum")}
+      {ReviewBox(featurereviews[index][0].review)}
       </Item>
       </CardActionArea>
 

@@ -29,7 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import Collapse from '@mui/material/Collapse';
-
+import {map as maps} from './util'
 export const Body = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const id = searchParams.get('userid');   
@@ -66,7 +66,7 @@ export const Body = () => {
     color: '#000000',
     fontFamily: 'Italiana-Regular',
     marginBottom: theme.spacing(2),
-    maxHeight: '45vh', 
+    maxHeight: '55vh', 
     overflowY: 'auto', 
   }));
 
@@ -78,6 +78,7 @@ export const Body = () => {
     fontFamily: 'Italiana-Regular',
     position: 'relative', 
     marginBottom: theme.spacing(2),
+    
   }));
 
   const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
@@ -129,19 +130,22 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
             <ContentCard>
               <CustomCardMedia
                 component="img"
-                src={mapImage}                
+                src={maps[restaurantid]}                
               />
             </ContentCard>
+          {
+            id >= 0 &&
             <div class="user-review">
-              <div class = "user-comment">
-                <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
-              </div>
-              <div class = "review-buttons">
-                <StyledRating precision={0.5} name="simple-controlled" value={value} onChange={(event, newValue) => {setValue(newValue);}}/>
-                <HeaderButton>Upload File</HeaderButton>
-                <HeaderButton>Comment</HeaderButton>
-              </div>
-            </div> 
+            <div class = "user-comment">
+              <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
+            </div>
+            <div class = "review-buttons">
+              <StyledRating precision={0.5} name="simple-controlled" value={value} onChange={(event, newValue) => {setValue(newValue);}}/>
+              <HeaderButton>Upload File</HeaderButton>
+              <HeaderButton>Comment</HeaderButton>
+            </div>
+          </div> 
+          }
             <ReviewsCard>
               {restaurantreviews[restaurantid].map((review, reviewIndex) => (
                 <ReviewCard key={reviewIndex}>

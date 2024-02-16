@@ -33,6 +33,7 @@ body {
   align-content: center;
   vertical-align: middle;
   padding-bottom: 20px;
+  overflow-y: auto;
 }
 .register2{
   padding-top: 30%;

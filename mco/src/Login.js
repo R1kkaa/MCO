@@ -59,6 +59,9 @@ function BoxSx() {
     for(var i=0; i < 5; i++){
       if(emails[i] == emailRef.current.value || username[i] == emailRef.current.value && passwords[i] == passwordRef.current.value)
       navigate('/home/main?userid='.concat(String(i)), {state:{id:i}})
+    else if(emailRef.current.value == "admin" && passwordRef.current.value == "Admin")
+      navigate('/home/main?userid=-1')
+
     }    
     setValid(0);
   };

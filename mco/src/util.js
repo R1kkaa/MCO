@@ -1,4 +1,11 @@
 //Restaurant Details
+import image1 from './images/map0.png';
+import image2 from './images/map1.png';
+import image3 from './images/map2.png';
+import image4 from './images/map3.png';
+import image5 from './images/map4.png';
+
+export const map = [image1,image2,image3,image4,image5]
 export var restaurants = ["Jollibee","McDonalds","KFC","Bonchon","24 Chicken"];
 export const location = ["Taft, Manila City","Taft, Manila City","Taft, Manila City","Taft, Manila City"];
 export const ratings = [4.6,4.6,4.5,4.6,4.6];
