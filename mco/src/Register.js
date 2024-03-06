@@ -87,8 +87,8 @@ function BoxSx() {
         <span class="registerinput1">      
           <ThemeTextField id="retypepassword" size="small" type="password" label="Retype Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
-        <span class="registerinput2">      
-          <ThemeTextField id="description" size="small" maxRows={4} rows={4} label="Short Description (Optional)" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+        <span class="registerinput1">      
+        <ThemeTextField multiline row={4} maxRows={4} id="description" size="small" label="Description" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="centercol">
         {InputFileUpload()}

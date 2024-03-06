@@ -13,10 +13,7 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { useSearchParams } from 'react-router-dom';
-import {emails} from './util';
-import {passwords} from './util';
-import {username} from './util';
+import  axios  from 'axios';
 
 export function Body(){
   return(
@@ -56,13 +53,16 @@ function BoxSx() {
   const passwordRef = useRef(); //creating a refernce for TextField Component
   const [valid, setValid] = useState(1);
   const loguser = () => {
-    for(var i=0; i < 5; i++){
-      if(emails[i] == emailRef.current.value || username[i] == emailRef.current.value && passwords[i] == passwordRef.current.value)
-      navigate('/home/main?userid='.concat(String(i)), {state:{id:i}})
-    else if(emailRef.current.value == "admin" && passwordRef.current.value == "Admin")
-      navigate('/home/main?userid=-1')
-
-    }    
+    
+    axios.get('http://localhost:5000/home/login')
+    .then(response => {
+      response.data.forEach(element => {
+        if(String(element.email) == emailRef.current.value && String(element.password) == passwordRef.current.value)
+          navigate('/home/main?userid='.concat(String(element._id)), {state: element._id})
+      });
+        }, error => {
+      console.log(error);
+    });
     setValid(0);
   };
   const typevalid = () => {

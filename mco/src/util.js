@@ -60,18 +60,6 @@ export const kfcreviews = [
         { userid: 4, rating: 5, review: "Not only do their flavors have great taste, they also have great music taste", helpful : 2, unhelpful : 0}]
 
 export const restaurantreviews = [jollibeereviews,mcdoreviews,kfcreviews,bonchonreviews,chicken24reviews]
-//format [[RestaurantID, Edited, Star Rating, Review, Agree, Disagree]]
-const personreviews = 
-//P1's review 1 and review 2
-[[[],[]],
-//P2's review 1 and review 2
-[[],[]],
-//P3's review 1 and review 2
-[[],[]],
-//P4's review 1 and review 2
-[[],[]],
-//P5's review 1 and review 2
-[[],[]]];
 
 export function stringuserid(q){
     let link = "?userid="

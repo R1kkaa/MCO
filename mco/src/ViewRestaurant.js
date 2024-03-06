@@ -35,9 +35,9 @@ export const Body = () => {
     const id = searchParams.get('userid');   
     const restaurantid = searchParams.get('restaurantid');  
     const [value, setValue] = React.useState(0);    
-    const [expanded, setExpanded] = React.useState(false);
-    const handleExpandClick = () => {
-      setExpanded(!expanded);
+    const [expandedId, setExpandedId] = React.useState(-1);
+    const handleExpandClick = i => {
+      setExpandedId(expandedId === i ? -1 : i);
     };
 
   const NameCard = styled(Card)(({ theme }) => ({
@@ -161,7 +161,7 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
                   <ButtonGroup variant="outlined" aria-label="Basic button group">
                     {
                         id < 0 && id !=review.userid                   
-                        && <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto">Reply As Owner</Typography></Button>
+                        && <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
                     }{
                         id >= 0 && id !=review.userid && (
                             <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
@@ -172,7 +172,7 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
                             <Button color="secondary" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
                             )
                     }{ id == review.userid && (
-                      <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={handleExpandClick}>Edit</Typography></Button>
+                      <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Edit</Typography></Button>
                     )
                     }{ id == review.userid && (
                       <Button color="secondary" variant="outlined" aria-label="Delete" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto">Delete</Typography></Button>
@@ -190,9 +190,13 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
 
 
                     </ButtonGroup>
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    {id == review.userid && <Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
-                    {id == review.userid && <Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                    <Collapse in={expandedId === reviewIndex && review.userid == id} timeout="auto" unmountOnExit>
+                    {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
+                    {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                      </Collapse>
+                      <Collapse in={expandedId === reviewIndex && id < 0} timeout="auto" unmountOnExit>
+                    {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
+                    {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
                       </Collapse>
                 </ReviewCard>
               ))}

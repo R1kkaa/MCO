@@ -19,7 +19,7 @@ import {Body as Edit} from './EditProfile'
 export const App = () => {
   return (
     <Routes>
-    <Route  path="/home/register" element={<><Header/><Register/></>}/>
+    <Route path="/home/register" element={<><Header/><Register/></>}/>
     <Route path="/home/login" element={<><Header/><Login/></>}/>
     <Route path="/home/main" element={<><Header2/><View/></>}/>
     <Route path="/home/form" element={<><Header4/><Form/></>}/>

@@ -8,10 +8,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import {ThemeTextField} from './Login';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select,{ SelectChangeEvent } from '@mui/material/Select'
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';;
 
@@ -78,7 +74,7 @@ function BoxSx() {
             <ThemeTextField id="fname" size="small" label="Landmark" variant="filled" color="secondary" placeholder = "Near Jollibee, Beside Agno..." sx={{opacity: 1, width: '55ch'}}/>
         </span>
         <span class="registerinput1">      
-          <ThemeTextField id="username" size="small" label="Restaurant Description" placeholder = "Tell us more about this place..." multiline rows = {6} variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+        <ThemeTextField multiline row={4} maxRows={4} id="description" size="small" label="Description" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         </span>
         
         <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 2px 3px #000000'}} onClick={viewprofile}>
