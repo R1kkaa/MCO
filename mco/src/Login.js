@@ -54,11 +54,11 @@ function BoxSx() {
   const [valid, setValid] = useState(1);
   const loguser = () => {
     
-    axios.get('http://localhost:5000/home/login')
+    axios.post('http://localhost:5000/home/login')
     .then(response => {
       response.data.forEach(element => {
-        if(String(element.email) == emailRef.current.value && String(element.password) == passwordRef.current.value)
-          navigate('/home/main?userid='.concat(String(element._id)), {state: element._id})
+        if(String(element.email) == emailRef.current.value || String(element.username) == emailRef.current.value && String(element.password) == passwordRef.current.value)
+          navigate('/home/main', { state: { userid: element._id, isOwner: false } })
       });
         }, error => {
       console.log(error);

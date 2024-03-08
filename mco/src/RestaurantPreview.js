@@ -3,25 +3,22 @@ import reportWebVitals from './reportWebVitals';
 import { Box, Typography} from '@mui/material';
 import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './RestaurantPreview.css';
-  import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { yellow } from '@mui/material/colors';
 import {restaurants} from './util'
-import {location} from './util'
 import {ratings} from './util'
 import {reviews} from './util'
-import Link from '@mui/material/Link';
 import CardActionArea from '@mui/material/CardActionArea';
 import { restaurantreviews as featurereviews } from './util';
+import { useLocation } from 'react-router-dom';
+import  axios  from 'axios';
+
 const options = {
   shouldForwardProp: (prop) => prop !== 'hoverShadow',
 };
@@ -91,31 +88,61 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false){
     )
 }
 
-export const Body = () => {
+//function to hold cover the props for navigation and location, data storage
+export function Body() {
   let navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-  const restaurantid = null;
-  function viewrestaurant(restaurant){
-    let link = "/home/main/user?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-  return(
+  const location = useLocation();
+  const id = location.state.userid
+
+  return <Preview        
+        router={{ location, navigate}}
+      />
+}
+
+//class to render the components
+export class Preview extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      restaurantslist: [],
+      reviewslist: []
+    };
+    }
+    componentDidMount() {
+      axios.get("http://localhost:5000/restaurants").then(response => 
+      {
+        this.setState({
+          restaurantslist: response.data,
+        });
+          }, error => {
+        console.log(error);
+      });
+      axios.get("http://localhost:5000/restaurants/featured").then(response => 
+      {
+        this.setState({
+          reviewslist: response.data,
+        });
+          }, error => {
+        console.log(error);
+      });
+    }
+  render(){
+    const {restaurantslist, reviewslist} = this.state;
+
+    { return (
     <ThemeProvider theme={Theme}>
     <div class="maincontainer">
     <Stack spacing={1} display="flex" flexDirection="column">
-    {restaurants.map((item, index) => (
-        <CardActionArea href={"/home/main/restaurant?userid=".concat(String(id)).concat("&restaurantid=".concat(String(index)))}>
+    {restaurantslist.map((item, index) => (
+        <CardActionArea href={"/home/main/restaurant?userid=".concat(String(1)).concat("&restaurantid=".concat(String(index)))}>
       <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
-        {item}
+        {item.restaurantName}
       </Typography>
-      <Typography variant="body2" fontFamily="Roboto" fontWeight="300">{location[index]}
+      <Typography variant="body2" fontFamily="Roboto" fontWeight="300">{item.location}
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
-      {ReadStarRating([ratings[index]])}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({reviews[index]} Reviews)</Typography>
-      {ReviewBox(featurereviews[index][0].review)}
+      {ReadStarRating(item.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({item.numreviews} Reviews)</Typography>
+      {ReviewBox(JSON.stringify(reviewslist[index]['review']))}
       </Item>
       </CardActionArea>
 
@@ -123,8 +150,8 @@ export const Body = () => {
     
     </Stack>
 </div>
-</ThemeProvider>
-  );
+</ThemeProvider>);}
+    };
 };
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
