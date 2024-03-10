@@ -30,180 +30,224 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import Collapse from '@mui/material/Collapse';
 import {map as maps} from './util'
-export const Body = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const id = searchParams.get('userid');   
-    const restaurantid = searchParams.get('restaurantid');  
-    const [value, setValue] = React.useState(0);    
-    const [expandedId, setExpandedId] = React.useState(-1);
-    const handleExpandClick = i => {
-      setExpandedId(expandedId === i ? -1 : i);
-    };
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import  axios  from 'axios';
 
-  const NameCard = styled(Card)(({ theme }) => ({
-    backgroundColor: Theme.palette.primary.main,
-    padding: theme.spacing(2),
-    textAlign: 'left',
-    color: '#000000',
-    marginBottom: theme.spacing(2),
-  }));
 
-  const ContentCard = styled(Card)(({ theme }) => ({
-    backgroundColor: Theme.palette.primary.main,
-    padding: theme.spacing(2),
-    textAlign: 'left',
-    color: '#000000',
-    fontFamily: 'Italiana-Regular',
-    marginBottom: theme.spacing(2),
-    height: '30vh', 
-    overflow: 'hidden', 
-  }));
+const NameCard = styled(Card)(({ theme }) => ({
+  backgroundColor: Theme.palette.primary.main,
+  padding: theme.spacing(2),
+  textAlign: 'left',
+  color: '#000000',
+  marginBottom: theme.spacing(2),
+}));
 
-   const ReviewsCard = styled(Card)(({ theme }) => ({
-    backgroundColor: Theme.palette.primary.light,
-    padding: theme.spacing(2),
-    textAlign: 'left',
-    color: '#000000',
-    fontFamily: 'Italiana-Regular',
-    marginBottom: theme.spacing(2),
-    maxHeight: '55vh', 
-    overflowY: 'auto', 
-  }));
+const ContentCard = styled(Card)(({ theme }) => ({
+  backgroundColor: Theme.palette.primary.main,
+  padding: theme.spacing(2),
+  textAlign: 'left',
+  color: '#000000',
+  fontFamily: 'Italiana-Regular',
+  marginBottom: theme.spacing(2),
+  height: '30vh', 
+  overflow: 'hidden', 
+}));
 
-  const ReviewCard = styled(Card)(({ theme }) => ({
-    backgroundColor: Theme.palette.primary.main,
-    padding: theme.spacing(2),
-    textAlign: 'left',
-    color: '#000000',
-    fontFamily: 'Italiana-Regular',
-    position: 'relative', 
-    marginBottom: theme.spacing(2),
-    
-  }));
+ const ReviewsCard = styled(Card)(({ theme }) => ({
+  backgroundColor: Theme.palette.primary.light,
+  padding: theme.spacing(2),
+  textAlign: 'left',
+  color: '#000000',
+  fontFamily: 'Italiana-Regular',
+  marginBottom: theme.spacing(2),
+  maxHeight: '55vh', 
+  overflowY: 'auto', 
+}));
 
-  const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
-    height: '100%', 
-    width: '45%', 
-    objectFit: 'cover'
-  }));
+const ReviewCard = styled(Card)(({ theme }) => ({
+  backgroundColor: Theme.palette.primary.main,
+  padding: theme.spacing(2),
+  textAlign: 'left',
+  color: '#000000',
+  fontFamily: 'Italiana-Regular',
+  position: 'relative', 
+  marginBottom: theme.spacing(2),
+  
+}));
 
-  const UserIcon = styled(Avatar)(({ theme }) => ({
-    position: 'absolute',
-    top: theme.spacing(1),
-    left: theme.spacing(1),
-  }));
+const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
+  height: '100%', 
+  width: '45%', 
+  objectFit: 'cover'
+}));
+
+const UserIcon = styled(Avatar)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(1),
+  left: theme.spacing(1),
+}));
 function EstablishmentResponse(Details, Title = "Establishment Owner's Response", Edited = false){
-    return(
-      <ThemeProvider theme={Theme}>
-      <Box         
-      sx={{
-      width: 500,
-      height: 100,
-      borderRadius: 1,
-      bgcolor: 'primary.light',
-      alignItems: 'center',
-      padding: '10px',
-      marginLeft: '40px',
-      marginBottom: '10px',
-      }}>
-        <Typography variant="subtitle2">{Title}{
-          Edited && " ( Edited )"
-        }
-        </Typography>
-        <Divider sx={{ borderBottomWidth: 3, bgcolor: "primary.main"}}/>
-        <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
-        </Box>
-      </ThemeProvider>
-      )
-  }
-  return (
+  return(
     <ThemeProvider theme={Theme}>
-      <div className="maincontainer">
-            <NameCard>
-              <Typography fontFamily="Roboto"variant="h4">{restaurantnames[restaurantid]}</Typography>
-              <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{location[restaurantid]}
+    <Box         
+    sx={{
+    width: 500,
+    height: 100,
+    borderRadius: 1,
+    bgcolor: 'primary.light',
+    alignItems: 'center',
+    padding: '10px',
+    marginLeft: '40px',
+    marginBottom: '10px',
+    }}>
+      <Typography variant="subtitle2">{Title}{
+        Edited && " ( Edited )"
+      }
       </Typography>
-      <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
-      {ReadStarRating([ratings[restaurantid]])}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({reviews[restaurantid]} Reviews)</Typography>
-            </NameCard>
-            
-            <ContentCard>
-              <CustomCardMedia
-                component="img"
-                src={maps[restaurantid]}                
-              />
-            </ContentCard>
-          {
-            id >= 0 &&
-            <div class="user-review">
-            <div class = "user-comment">
-              <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
-            </div>
-            <div class = "review-buttons">
-              <StyledRating precision={0.5} name="simple-controlled" value={value} onChange={(event, newValue) => {setValue(newValue);}}/>
-              <HeaderButton>Upload File</HeaderButton>
-              <HeaderButton>Comment</HeaderButton>
-            </div>
-          </div> 
-          }
-            <ReviewsCard>
-              {restaurantreviews[restaurantid].map((review, reviewIndex) => (
-                <ReviewCard key={reviewIndex}>
-                  <UserIcon>
-                    {name[review.userid].charAt(0).toUpperCase()}
-                  </UserIcon>
-                  <Box ml={5}> 
-                    <Typography fontFamily="Roboto" variant="h6">{name[review.userid]}</Typography>
-                    {ReadStarRating(review.rating)}
-                    {ReviewBox(review.review, "Review")}
-                    {EstablishmentResponse("Thank You!")}
-                  </Box>
-                  <ButtonGroup variant="outlined" aria-label="Basic button group">
+      <Divider sx={{ borderBottomWidth: 3, bgcolor: "primary.main"}}/>
+      <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
+      </Box>
+    </ThemeProvider>
+    )
+}
+
+export function Body() {
+  let navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [value, setValue] = React.useState(0);    
+  const [expandedId, setExpandedId] = React.useState(-1);
+  const handleExpandClick = i => {
+    setExpandedId(expandedId === i ? -1 : i);
+  };
+  return <View        
+        router={{ location, navigate}}
+      />
+}
+
+export class View extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      restaurants: [],
+      reviewslist: [],
+      expandedId: -1,
+      value: 0
+    };
+    }
+    componentDidMount() {
+      axios.get("http://localhost:5000/restaurants/".concat(this.props.router.location.state.restaurantid)).then(response => 
+      {
+        this.setState({
+          restaurants: response.data,
+        });
+          }, error => {
+        console.log(error);
+      });
+      axios.get("http://localhost:5000/restaurants/".concat(this.props.router.location.state.restaurantid).concat("/reviews")).then(response => 
+      {
+        this.setState({
+          reviewslist: response.data,
+        });
+          }, error => {
+        console.log(error);
+      });
+    }
+
+    render(){
+      const {restaurants, reviewslist, expandedId, value} = this.state;
+      const handleExpandClick = i => {
+        this.setState({
+          expandedId: this.state.expandedId === i ? -1 : i
+      })}
+      return (
+      <ThemeProvider theme={Theme}>
+        <div className="maincontainer">
+              <NameCard>
+                <Typography fontFamily="Roboto"variant="h4">{restaurants.restaurantName}</Typography>
+                <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{restaurants.location}
+        </Typography>
+        <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
+        {restaurants.avgrating && ReadStarRating(restaurants.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({restaurants.numreviews} Reviews)</Typography>
+              </NameCard>
+              <ContentCard>
+                <CustomCardMedia
+                  component="img"
+                  src={maps[this.state.restaurantid]}                
+                />
+              </ContentCard>
+            {
+              this.state.id >= 0 &&
+              <div class="user-review">
+              <div class = "user-comment">
+                <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
+              </div>
+              <div class = "review-buttons">
+                <StyledRating precision={0.5} name="simple-controlled" value={this.state.value} onChange={(event, newValue) => {this.setState({value:newValue})}}/>
+                <HeaderButton>Upload File</HeaderButton>
+                <HeaderButton>Comment</HeaderButton>
+              </div>
+            </div> 
+            }
+              <ReviewsCard>
+                {reviewslist && reviewslist.map((review, reviewIndex) => (
+                  <ReviewCard key={reviewIndex}>
+                    <UserIcon>
+                      {review.user[0].firstName && String(review.user[0].firstName).charAt(0).toUpperCase()}
+                    </UserIcon>
+                    <Box ml={5}> 
+                      <Typography fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
+                      {ReadStarRating(review.rating)}
+                      {ReviewBox(review.review, "Review")}
+                      {EstablishmentResponse("Thank You!")}
+                    </Box>
+                    <ButtonGroup variant="outlined" aria-label="Basic button group">
+                      {
+                          this.props.router.location.state.userid !=review.reviewerID &&                 
+                           <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
+                      }{
+                        this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
+                              <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
+                                )
+                      }
                     {
-                        id < 0 && id !=review.userid                   
-                        && <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
-                    }{
-                        id >= 0 && id !=review.userid && (
-                            <Button color="secondary" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
+                        this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
+                              <Button color="secondary" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
+                              )
+                      }{ this.props.router.location.state.userid == review.reviewerID && (
+                        <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Edit</Typography></Button>
+                      )
+                      }{ this.props.router.location.state.userid == review.reviewerID && (
+                        <Button color="secondary" variant="outlined" aria-label="Delete" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto">Delete</Typography></Button>
+                      )
+                      }{
+                        this.props.router.location.state.userid == "nouser" && (
+                            <Button color="secondary" href="/home/register" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
                               )
                     }
                   {
-                      id >= 0 && id !=review.userid && (
-                            <Button color="secondary" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
+                      this.props.router.location.state.userid == "nouser" && (
+                            <Button color="secondary" href="/home/register" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
                             )
-                    }{ id == review.userid && (
-                      <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Edit</Typography></Button>
-                    )
-                    }{ id == review.userid && (
-                      <Button color="secondary" variant="outlined" aria-label="Delete" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto">Delete</Typography></Button>
-                    )
-                    }{
-                      id == "null" && (
-                          <Button color="secondary" href="/home/register" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
-                            )
-                  }
-                {
-                    id == "null" && (
-                          <Button color="secondary" href="/home/register" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
-                          )
-                  }
-
-
-                    </ButtonGroup>
-                    <Collapse in={expandedId === reviewIndex && review.userid == id} timeout="auto" unmountOnExit>
-                    {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
-                    {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
-                      </Collapse>
-                      <Collapse in={expandedId === reviewIndex && id < 0} timeout="auto" unmountOnExit>
-                    {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
-                    {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
-                      </Collapse>
-                </ReviewCard>
-              ))}
-            </ReviewsCard>
-          </div>
-    </ThemeProvider>
-  );
+                    }
+  
+  
+                      </ButtonGroup>
+                      <Collapse in={this.state.expandedId === reviewIndex && review.userid == this.state.id} timeout="auto" unmountOnExit>
+                      {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
+                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                        </Collapse>
+                        <Collapse in={this.state.expandedId === reviewIndex && this.state.id < 0} timeout="auto" unmountOnExit>
+                      {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
+                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
+                        </Collapse>
+                  </ReviewCard>
+                ))}
+              </ReviewsCard>
+            </div>
+      </ThemeProvider>
+    )}
 };
 
 reportWebVitals();

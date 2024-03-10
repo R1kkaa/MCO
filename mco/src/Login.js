@@ -58,7 +58,7 @@ function BoxSx() {
     .then(response => {
       response.data.forEach(element => {
         if(String(element.email) == emailRef.current.value || String(element.username) == emailRef.current.value && String(element.password) == passwordRef.current.value)
-          navigate('/home/main', { state: { userid: element._id, isOwner: false } })
+          navigate('/home/main', { state: { userid: element._id, isOwner: element.isOwner } })
       });
         }, error => {
       console.log(error);

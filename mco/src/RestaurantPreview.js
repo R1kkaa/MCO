@@ -92,10 +92,15 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false){
 export function Body() {
   let navigate = useNavigate();
   const location = useLocation();
-  const id = location.state.userid
+  var id = "nouser"
+  var isOwner = false
+  if(location.state){
+    id = location.state.userid
+    isOwner = location.state.isOwner
+  }
 
   return <Preview        
-        router={{ location, navigate}}
+        router={{ location, navigate, id, isOwner}}
       />
 }
 
@@ -134,15 +139,15 @@ export class Preview extends React.Component {
     <div class="maincontainer">
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
-        <CardActionArea href={"/home/main/restaurant?userid=".concat(String(1)).concat("&restaurantid=".concat(String(index)))}>
+        <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id } })}>
       <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
         {item.restaurantName}
       </Typography>
       <Typography variant="body2" fontFamily="Roboto" fontWeight="300">{item.location}
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
-      {ReadStarRating(item.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({item.numreviews} Reviews)</Typography>
-      {ReviewBox(JSON.stringify(reviewslist[index]['review']))}
+      {ReadStarRating(item.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">(Reviews)</Typography>
+      {ReviewBox(JSON.stringify(reviewslist[index]))}
       </Item>
       </CardActionArea>
 

@@ -35,7 +35,9 @@ const restaurantsSchema = new Schema({
   restaurantName: String,
   location: String,
   description: String,
-  owner: String
+  owner: String,
+  avgrating: Number,
+  numreviews: Number
 })
 const restaurants = mongoose.model('Restaurant', restaurantsSchema);
 
@@ -87,14 +89,7 @@ async function getavgreviews(passrestaurantID){
   ]).exec()
     return val[0].avgReview
   }
-
-//post userdata
-app.post('/home/login', async function (req, res) {
-  var val = await getusers()
-  res.send(val)
-});
-
-async function getfeaturedreviews(restaurant){
+  async function getfeaturedreviews(restaurant){
     var val = await reviews.aggregate([{
       $match:{
         restaurantID: String(restaurant._id),
@@ -104,48 +99,57 @@ async function getfeaturedreviews(restaurant){
       }
     }])
     var rand = parseInt(Math.floor(Math.random() * val.length))
-    return val[rand]
+    return val[rand].review
 }
-//get restaurants data
+async function getrestoreviews(id){
+  var val = await reviews.aggregate([{
 
+    $match:{
+      restaurantID: String(id),
+    },
+  }]).lookup(    {
+    from: 'users',
+    localField: 'reviewerID',
+    foreignField: '_id',
+    as: 'user'
+  })
+  return val
+}
+
+//post userdata
+app.post('/home/login', async function (req, res) {
+  var val = await getusers()
+  res.send(val)
+});
+
+//restaurants data
 app.get('/restaurants', async function (req, res) {
   var val = await getrestaurants()
   res.send(val)
 });
 
+//randomly select featured reviews data
 app.get('/restaurants/featured', async function (req, res) {
   var val = await getrestaurants()
   const reviews = await Promise.all(val.map(restaurants => getfeaturedreviews(restaurants)))
   res.send(reviews)
 });
 
+app.get('/restaurants/:id', async function (req, res){
+  var val = await restaurants.findOne({_id: req.params.id}).
+  catch(err => res.send("ERROR 404"));
+  res.send(val)
+});
 
-async function loadrestaurants(){
-  var restaurantquery = await getrestaurants()
-  restaurantquery.forEach(async (restaurant) => {
-    let id = restaurant._id.toString()
-    app.get("/restaurants/".concat(id), async function (req,res){
-      var avg = await getavgreviews(id)
-      avg = 5
-      var num = await getnumreviews(id)
-      var featured = await getfeaturedreviews(restaurant)
-      var val = {data:restaurant, avgreview: avg, numreview: num, featuredreview: featured}
-      res.send(val)
-    })
-  });
-}
 
-loadrestaurants()
-  
-  //get reviews data
+app.get('/restaurants/:id/reviews', async function (req, res){
+  var val = await getrestoreviews(req.params.id)
+  res.send(val)
+});
+
+//get all reviews data
 app.get('/reviews', async function (req, res) {
   var val = await getreviews()
   res.send(val)
 });
 
-async function test(){
-  var val = await getrestaurants()
-  const reviews = await Promise.all(val.map(restaurants => getfeaturedreviews(restaurants)))
-  console.log(reviews[0].reviews)
-}
-test()
