@@ -21,11 +21,11 @@ export const App = () => {
     <Routes>
     <Route path="/home/register" element={<><Header/><Register/></>}/>
     <Route path="/home/login" element={<><Header/><Login/></>}/>
-    <Route path="/home/main" element={<><Header2/><View/></>}/>
-    <Route path="/home/form" element={<><Header4/><Form/></>}/>
-    <Route path="/home/main/user" element={<><Header3/><User/></>}/>
-    <Route path="/home/main/restaurant/:restaurantid" element={<><Header3/><Restaurant/></>}/>
-    <Route path="/home/main/user/editprofile" element={<><Header3/><Edit/></>}></Route>
+    <Route path="/home/main" element={<><Header/><View/></>}/>
+    <Route path="/home/form" element={<><Header/><Form/></>}/>
+    <Route path="/home/main/user/:id" element={<><Header/><User/></>}/>
+    <Route path="/home/main/restaurant/:restaurantid" element={<><Header/><Restaurant/></>}/>
+    <Route path="/home/main/user/editprofile" element={<><Header/><Edit/></>}></Route>
     </Routes>
   );
 };

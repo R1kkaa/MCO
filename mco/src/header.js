@@ -15,6 +15,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import logo from './images/logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 function HideOnScroll(props) {
   const { children, window } = props;
   const trigger = useScrollTrigger({
@@ -92,6 +94,16 @@ export const HeaderButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  var id = "nouser"
+  var isOwner = false
+  var currlocation = "main"
+  if(location.state){
+    id = location.state.userid
+    isOwner = location.state.isOwner
+    currlocation = location.state.currlocation
+  }
   return (
     <Box sx={{ flexGrow: 1}} >
       <HideOnScroll>
@@ -116,205 +128,28 @@ export default function Header() {
           </Search>
           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/main?userid=null">
-            Home</HeaderButton>
+          {currlocation != "home" &&          
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/",{ state: { userid: id, isOwner: isOwner, currlocation: "home"}})}>
+            Home</HeaderButton>}
+          {currlocation == "home" &&
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/form",{ state: { userid: id, isOwner: isOwner, currlocation: "form"}})}>
+          Submit Restaurant</HeaderButton>
+          }
+            {id == "nouser" &&           
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Register</HeaderButton>
+          Register</HeaderButton>}
+          {id == "nouser" &&          
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Login</HeaderButton>
-            </ThemeProvider>
-          </span>
-        </Toolbar>
-      </AppBar>
-      </HideOnScroll>
-    </Box>
-  );
-}
-export function Header2(props) {
-
-  let navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-  function viewprofile(){
-    let link = "/home/main/user?userid="
-      link = link.concat(String(id)).concat("&viewuserid=").concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-  function viewform(){
-    let link = "/home/form?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-
-
-  return (
-    <Box sx={{ flexGrow: 1}} >
-      <HideOnScroll>
-      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none',}}>
-        <Toolbar >
-        <Box
-      component="img"
-      sx={{
-        height: '60px',
-        width: 'auto',
-      }}
-      src={logo}
-    />
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search Restaurants         |         Cuisine         |         Food"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <span class="buttongroup2">
-          <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewform}>
-            Submit Restaurant</HeaderButton>
-          {id >= 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
-            Profile</HeaderButton>}
-            {id >= 0 &&           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Sign Out</HeaderButton>}
-            {
-            id < 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Sign Out</HeaderButton> 
-          }{
-            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Register</HeaderButton> 
-          }{
-            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Login</HeaderButton> 
+          Login</HeaderButton>}
+          {currlocation != "profile" && id != "nouser" && !isOwner &&
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/user/".concat(id),{ state: { userid: id, isOwner: isOwner, currlocation: "profile"}})}>
+          Profile </HeaderButton>
           }
-          
-            </ThemeProvider>
-          </span>
-        </Toolbar>
-      </AppBar>
-      </HideOnScroll>
-    </Box>
-  );
-}
-export function Header3(props) {
-
-  let navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-    function viewprofile(){
-    let link = "/home/main?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-  function viewform(){
-    let link = "/home/form?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-
-  return (
-    <Box sx={{ flexGrow: 1}} >
-      <HideOnScroll>
-      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none',}}>
-        <Toolbar >
-        <Box
-      component="img"
-      sx={{
-        height: '60px',
-        width: 'auto',
-      }}
-      src={logo}
-    />
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search Restaurants         |         Cuisine         |         Food"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-           <span class="buttongroup2">
-          <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewform}>
-            Submit Restaurant</HeaderButton>
-          {id >= 0 ?           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
-            Home</HeaderButton> : <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Register</HeaderButton>}
-            {id >= 0 ?           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Sign Out</HeaderButton> : <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Login</HeaderButton>}
-            </ThemeProvider>
-          </span>
-        </Toolbar>
-      </AppBar>
-      </HideOnScroll>
-    </Box>
-  );
-}
-export function Header4(props) {
-
-  let navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-    function viewhome(){
-    let link = "/home/main?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-  function viewprofile(){
-    let link = "/home/main/user?userid="
-      link = link.concat(String(id)).concat("&viewuserid=").concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-
-  return (
-    <Box sx={{ flexGrow: 1}} >
-      <HideOnScroll>
-      <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none',}}>
-        <Toolbar >
-        <Box
-      component="img"
-      sx={{
-        height: '60px',
-        width: 'auto',
-      }}
-      src={logo}
-    />
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search Restaurants         |         Cuisine         |         Food"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-           <span class="buttongroup2">
-          <ThemeProvider theme={Theme}>
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewhome}>
-            Home</HeaderButton>
-          {id >= 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={viewprofile}>
-            Profile</HeaderButton>}
-            {id >= 0 &&           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
-            Sign Out</HeaderButton>}
-            {
-            id < 0 && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Sign Out</HeaderButton> 
-          }{
-            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Register</HeaderButton> 
-          }{
-            id == "null" && <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
-            Login</HeaderButton> 
+          {id != "nouser" &&
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+          Sign Out</HeaderButton>
           }
-            </ThemeProvider>
+          </ThemeProvider>
           </span>
         </Toolbar>
       </AppBar>

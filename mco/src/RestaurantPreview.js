@@ -139,14 +139,14 @@ export class Preview extends React.Component {
     <div class="maincontainer">
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
-        <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id } })}>
+        <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>
       <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
         {item.restaurantName}
       </Typography>
       <Typography variant="body2" fontFamily="Roboto" fontWeight="300">{item.location}
       </Typography>
       <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
-      {ReadStarRating(item.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">(Reviews)</Typography>
+      {ReadStarRating(item.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({item.numreviews} Reviews)</Typography>
       {ReviewBox(JSON.stringify(reviewslist[index]))}
       </Item>
       </CardActionArea>

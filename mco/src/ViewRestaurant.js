@@ -178,7 +178,7 @@ export class View extends React.Component {
                 />
               </ContentCard>
             {
-              this.state.id >= 0 &&
+              this.props.router.location.state.userid != "nouser" && !this.props.router.location.state.isOwner &&
               <div class="user-review">
               <div class = "user-comment">
                 <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
@@ -200,11 +200,11 @@ export class View extends React.Component {
                       <Typography fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
                       {ReadStarRating(review.rating)}
                       {ReviewBox(review.review, "Review")}
-                      {EstablishmentResponse("Thank You!")}
+                      {review.ownerresponse && EstablishmentResponse(review.ownerresponse)}
                     </Box>
                     <ButtonGroup variant="outlined" aria-label="Basic button group">
                       {
-                          this.props.router.location.state.userid !=review.reviewerID &&                 
+                          this.props.router.location.state.isOwner && this.props.router.location.state.userid !=review.reviewerID &&                 
                            <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
                       }{
                         this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
