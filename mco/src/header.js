@@ -131,7 +131,7 @@ export default function Header() {
           {currlocation != "home" &&          
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/",{ state: { userid: id, isOwner: isOwner, currlocation: "home"}})}>
             Home</HeaderButton>}
-          {currlocation == "home" &&
+          {(currlocation == "home" || currlocation == "profile") &&
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/form",{ state: { userid: id, isOwner: isOwner, currlocation: "form"}})}>
           Submit Restaurant</HeaderButton>
           }
@@ -142,7 +142,7 @@ export default function Header() {
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
           Login</HeaderButton>}
           {currlocation != "profile" && id != "nouser" && !isOwner &&
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/user/".concat(id),{ state: { userid: id, isOwner: isOwner, currlocation: "profile"}})}>
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})}>
           Profile </HeaderButton>
           }
           {id != "nouser" &&

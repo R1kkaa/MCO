@@ -115,14 +115,14 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
 export function Body() {
   let navigate = useNavigate();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [value, setValue] = React.useState(0);    
-  const [expandedId, setExpandedId] = React.useState(-1);
-  const handleExpandClick = i => {
-    setExpandedId(expandedId === i ? -1 : i);
-  };
+  var id = "nouser"
+  var isOwner = false
+  if(location.state){
+    id = location.state.userid
+    isOwner = location.state.isOwner
+  }
   return <View        
-        router={{ location, navigate}}
+        router={{ location, navigate, id, isOwner}}
       />
 }
 
@@ -193,11 +193,14 @@ export class View extends React.Component {
               <ReviewsCard>
                 {reviewslist && reviewslist.map((review, reviewIndex) => (
                   <ReviewCard key={reviewIndex}>
+                    {/* fix the alignment, track ownership */}
                     <UserIcon>
                       {review.user[0].firstName && String(review.user[0].firstName).charAt(0).toUpperCase()}
                     </UserIcon>
                     <Box ml={5}> 
-                      <Typography fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
+                    {review.user[0.].firstName && <Button variant="text" onClick={()=>this.props.router.navigate('/home/main/user/'.concat(review.user[0]._id), { state: { userid: this.props.router.id, viewuser : review.user[0]._id, currlocation: "profile"}})} color="secondary">
+                      <Typography  fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
+                      </Button>}
                       {ReadStarRating(review.rating)}
                       {ReviewBox(review.review, "Review")}
                       {review.ownerresponse && EstablishmentResponse(review.ownerresponse)}
@@ -234,11 +237,11 @@ export class View extends React.Component {
   
   
                       </ButtonGroup>
-                      <Collapse in={this.state.expandedId === reviewIndex && review.userid == this.state.id} timeout="auto" unmountOnExit>
+                      <Collapse in={this.state.expandedId === reviewIndex && review.userid == this.state.id && !this.props.router.location.state.isOwner} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
                         </Collapse>
-                        <Collapse in={this.state.expandedId === reviewIndex && this.state.id < 0} timeout="auto" unmountOnExit>
+                        <Collapse in={this.state.expandedId === reviewIndex} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
                         </Collapse>

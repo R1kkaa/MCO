@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 5000;
 const axios = require('axios');
-
+const mongodb = require('mongodb')
 
 const cors = require("cors");
 app.use(cors());
@@ -59,40 +59,10 @@ async function getreviews(){
   const reviewquery = await reviews.find({})
   return reviewquery;
 }
-async function getnumreviews(passrestaurantID){
-  var val = await reviews.aggregate([{
-      $match: 
-        {
-        restaurantID: String(passrestaurantID)
-        }
-      }, 
-      {
-        $count: "numreviews"
-      },
-  
-    ])
-    return val[0].numreviews
-  }
-async function getavgreviews(passrestaurantID){
-  var val = await reviews.aggregate([
-    {
-      $match: {
-        restaurantID: String(passrestaurantID)
-      }
-    },
-    {
-      $group: {
-        _id: passrestaurantID,
-        avgReview: { $avg: "$rating" }
-      }
-    }
-  ]).exec()
-    return val[0].avgReview
-  }
-  async function getfeaturedreviews(restaurant){
+async function getfeaturedreviews(restaurant){
     var val = await reviews.aggregate([{
       $match:{
-        restaurantID: String(restaurant._id),
+        restaurantID: restaurant._id,
         rating: {
           $gte: 4
         }
@@ -105,7 +75,7 @@ async function getrestoreviews(id){
   var val = await reviews.aggregate([{
 
     $match:{
-      restaurantID: String(id),
+      restaurantID: mongodb.ObjectId.createFromHexString(id),
     },
   }]).lookup(    {
     from: 'users',
@@ -116,17 +86,37 @@ async function getrestoreviews(id){
   return val
 }
 
-//post userdata
+async function getuserreviews(id){
+  var val
+  try{
+    val = await reviews.aggregate([{
+      $match:{
+        reviewerID: mongodb.ObjectId.createFromHexString(id),
+      },
+    }]).lookup(    {
+      from: 'restaurants',
+      localField: 'restaurantID',
+      foreignField: '_id',
+      as: 'restaurant'
+    })
+  }catch(error){
+    val = "ERROR404"
+  }
+  return val
+}
+
+//post userdata for login
 app.post('/home/login', async function (req, res) {
   var val = await getusers()
   res.send(val)
 });
 
-//restaurants data
+//all restaurants data
 app.get('/restaurants', async function (req, res) {
   var val = await getrestaurants()
   res.send(val)
 });
+
 
 //randomly select featured reviews data
 app.get('/restaurants/featured', async function (req, res) {
@@ -135,13 +125,14 @@ app.get('/restaurants/featured', async function (req, res) {
   res.send(reviews)
 });
 
+//per restaurant data
 app.get('/restaurants/:id', async function (req, res){
   var val = await restaurants.findOne({_id: req.params.id}).
   catch(err => res.send("ERROR 404"));
   res.send(val)
 });
 
-
+//per restaurant review
 app.get('/restaurants/:id/reviews', async function (req, res){
   var val = await getrestoreviews(req.params.id)
   res.send(val)
@@ -150,6 +141,18 @@ app.get('/restaurants/:id/reviews', async function (req, res){
 //get all reviews data
 app.get('/reviews', async function (req, res) {
   var val = await getreviews()
+  res.send(val)
+});
+
+//user data
+app.get('/user/:id', async function (req, res){
+  var val = await users.findOne({_id: req.params.id}).
+  catch(err => res.send("ERROR 404"));
+  res.send(val)
+});
+
+app.get('/user/:id/reviews', async function (req, res){
+  var val = await getuserreviews(req.params.id)
   res.send(val)
 });
 

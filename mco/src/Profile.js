@@ -22,7 +22,7 @@ import { ReviewBox } from './RestaurantPreview';
 import { useNavigate } from 'react-router-dom';
 import { restaurantreviews } from './util';
 import {restaurants as restaurantnames} from './util';
-
+import axios from 'axios';
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
@@ -83,11 +83,19 @@ const ReviewsCard = styled(Card)(({ theme }) => ({
 
 export function Body(){
 
+  let navigate = useNavigate();
+  const location = useLocation();
+  var id = "nouser"
+  var viewuser = "none"
+  if(location.state){
+    id = location.state.userid
+    viewuser = location.state.viewuser
+  }
   return(
   <body>
   <span class="maindiv">
   <span class="profilebox">
-  <BoxSx>
+  <BoxSx router={{ location, navigate, id, viewuser}}>
   </BoxSx>
   </span>
   </span>
@@ -144,19 +152,43 @@ const HeaderButton = styled(Button)(({ theme }) => ({
   fontWeight: "400"
   
 }));
-function BoxSx() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('userid');  
-  const loggedid = searchParams.get('viewuserid');  
-  let navigate = useNavigate();
-    function viewprofile(){
-    let link = "/home/main/user/editprofile?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
-  }
-  return (
-    <ThemeProvider theme={Theme}>
+class BoxSx extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstname: "",
+      lastname: "",
+      username: "",
+      description: "",
+      reviewslist: []
+    };
+    }
+    componentDidMount() {
+      axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser)).then(response => 
+      {
+        this.setState({
+          firstname: response.data.firstName,
+          lastname: response.data.lastName,
+          username: response.data.username,
+          description: response.data.description,
+
+        });
+          }, error => {
+        console.log(error);
+      });
+      axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/reviews")).then(response => 
+      {
+        this.setState({
+          reviewslist: response.data,
+        });
+          }, error => {
+        console.log(error);
+      });
+    }
+  render(){
+      const {firstname, lastname, username, description, reviewslist} = this.state;
+      return(
+      <ThemeProvider theme={Theme}>
     <Box
         sx={{
           width: 1300,
@@ -181,19 +213,19 @@ function BoxSx() {
         <div class="picturebox">
             <img class="profilepic" src="https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="/>
             <div class="descriptioncontainer">
-                <p> {desc[id]} </p>
+                <p> {description} </p>
             </div>
         </div>
       
         <div>
             <div class="namecontainer">
-            {name[id]}<br/>
-{
-  id==loggedid &&             <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '340px'}} onClick={viewprofile}>Edit Profile</HeaderButton>      
+            {firstname.concat(" ").concat(lastname)}<br/>
+{this.props.router.id == this.props.router.viewuser && 
+<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '340px'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser}})}>Edit Profile</HeaderButton>      
 }
             </div>
             <div class="usernamecontainer">
-            {username[id]}<br/>
+            {username}<br/>
             </div>
 
         </div>
@@ -202,13 +234,10 @@ function BoxSx() {
           <div class="rightboxdiv">
             <div class="descriptioncontainer2">
               <Typography variant="h6">Reviews and Comments</Typography>   
-              {restaurantreviews.map((restaurantreview, restaurantindex) => (
-                restaurantreview.map((reviews,reviewindex) => (
-                  reviews.userid == id && 
+              {reviewslist.map((review, reviewIndex) => (
                   <span>
-                  {ReviewBoxWithStar(reviews.review, reviews.rating, restaurantnames[restaurantindex])}
+                  {ReviewBoxWithStar(review.review, review.rating, review.restaurant[0].restaurantName)}
                   </span>
-                ))
               ))}
   </div>
           </div>
@@ -216,8 +245,7 @@ function BoxSx() {
       </div>
         
     </Box>
-    </ThemeProvider>
-  );
+    </ThemeProvider>);}
 }
 
 // If you want to start measuring performance in your app, pass a function
