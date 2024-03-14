@@ -135,27 +135,7 @@ const UserIcon = styled(Avatar)(({ theme }) => ({
   left: theme.spacing(1),
 }));
 
-const useStyles = makeStyles({
-  scrollBar: {
-    "&::-webkit-scrollbar": {
-      width: "3px",
-    },
 
-    "&::-webkit-scrollbar-track": {
-      boxShadow: "inset 0 0 5px rgb(255, 251, 251)",
-      borderRadius: "10px",
-    },
- 
-    "&::-webkit-scrollbar-thumb": {
-      background: "#077DFA",
-      borderRadius: "10px",
-    },
-
-    "&::-webkit-scrollbar-thumb:hover": {
-      background: "rgb(255, 251, 251)",
-    }
-  }
-});
 function EstablishmentResponse(Details, Title = "Establishment Owner's Response", Edited = false){
   return(
     <ThemeProvider theme={Theme}>
