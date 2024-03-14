@@ -11,13 +11,17 @@ import './RestaurantPreview.css';
 import Divider from '@mui/material/Divider';
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
-import {restaurants} from './util'
-import {ratings} from './util'
-import {reviews} from './util'
 import CardActionArea from '@mui/material/CardActionArea';
-import { restaurantreviews as featurereviews } from './util';
 import { useLocation } from 'react-router-dom';
 import  axios  from 'axios';
+import Checkbox from '@mui/material/Checkbox';
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+
 
 const options = {
   shouldForwardProp: (prop) => prop !== 'hoverShadow',
@@ -88,6 +92,26 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false){
     )
 }
 
+function Filter() {
+  return (
+    <FormControl>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+        defaultValue="0+"
+              >
+                  
+        <FormControlLabel value="4+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"4+ Stars"} </Typography>} labelPlacement="start"/>
+        <FormControlLabel value="3+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"3+ Stars"} </Typography>} labelPlacement="start"/>
+        <FormControlLabel value="2+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"2+ Stars"} </Typography>} labelPlacement="start"/>
+        <FormControlLabel value="1+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"1+ Star"} </Typography>} labelPlacement="start"/>
+        <FormControlLabel value="0+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"0+ Star"} </Typography>} labelPlacement="start"/>
+      </RadioGroup>
+    </FormControl>
+  );
+}
+
 //function to hold cover the props for navigation and location, data storage
 export function Body() {
   let navigate = useNavigate();
@@ -137,6 +161,30 @@ export class Preview extends React.Component {
     { return (
     <ThemeProvider theme={Theme}>
     <div class="maincontainer">
+    <Box         
+    sx={{
+    width: "98.37%",
+    height: 20,
+    borderRadius: 1,
+    display: 'flex',
+    bgcolor: 'primary.main',
+    alignItems: 'center',
+    padding: '10px',
+    marginLeft: 'px',
+    marginTop: '10px',
+    marginBottom: '10px',
+    verticalAlign: 'center',
+    alignContent: 'center',
+    textAlign: 'center',
+    justifyContent: 'space-evenly'
+
+
+    }}>
+  <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline">Filter Restaurants By Rating
+      </Typography>
+      <Filter/>
+      <FormControlLabel control={<Checkbox color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"Sort Alphabetically: "} </Typography>} labelPlacement='start'/>
+    </Box>
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
         <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>

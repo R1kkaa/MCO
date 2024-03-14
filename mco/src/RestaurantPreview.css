@@ -19,7 +19,15 @@
     flex-direction: column;
     align-items: flex-end;
 }
+.align{
+    display: flex;
+    flex-direction: row;
+    align-items:start;
+    vertical-align: center;
+    align-content: start;
+    text-align: start;
 
+}
 .user-comment{
     width:98%
 }

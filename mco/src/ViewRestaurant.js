@@ -6,12 +6,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Theme } from './themes';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import mapImage from './images/jollibeemap.jpg';
-import { useSearchParams } from 'react-router-dom';
-import { restaurants as names } from './util';
-import {location} from './util';
-import {ratings} from './util';
-import {reviews} from './util';
 import { ReadStarRating } from './RestaurantPreview';
 import Divider from '@mui/material/Divider';
 import {ButtonGroup} from '@mui/material';
@@ -22,18 +16,71 @@ import AddCommentIcon from '@mui/icons-material/AddComment';
 import { StyledRating } from './RestaurantPreview';
 import Input from '@mui/material/Input';
 import { HeaderButton } from './header';
-import { name } from './util';
-import { restaurantreviews } from './util';
-import {restaurants as restaurantnames} from './util';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
 import Collapse from '@mui/material/Collapse';
-import {map as maps} from './util'
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import  axios  from 'axios';
+import { alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
 
+export const HeaderButton2 = styled(Button)(({ theme }) => ({
+  color: '#454545',
+  backgroundColor: Theme.palette.primary.light, 
+  '&:hover': {
+    backgroundColor: '#bf7e1d',
+    color: 'black',
+  },
+  minWidth: '150px', 
+  fontFamily: "Roboto" ,
+  fontWeight: "400"
+  
+}));
+
+export const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.65),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.75),
+  },
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+  fontFamily: 'Italiana-Regular',
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'black',
+  width: '100%',
+  fontFamily: 'Italiana-Regular',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    [theme.breakpoints.up('sm')]: {
+      width: '20ch',
+      '&:focus': {
+        width: '50ch',
+      },
+    },
+  },
+}));
 
 const NameCard = styled(Card)(({ theme }) => ({
   backgroundColor: Theme.palette.primary.main,
@@ -50,7 +97,7 @@ const ContentCard = styled(Card)(({ theme }) => ({
   color: '#000000',
   fontFamily: 'Italiana-Regular',
   marginBottom: theme.spacing(2),
-  height: '30vh', 
+  height: '600px', 
   overflow: 'hidden', 
 }));
 
@@ -78,7 +125,7 @@ const ReviewCard = styled(Card)(({ theme }) => ({
 
 const CustomCardMedia = styled(CardMedia)(({ theme }) => ({
   height: '100%', 
-  width: '45%', 
+  width: '100%', 
   objectFit: 'cover'
 }));
 
@@ -87,6 +134,28 @@ const UserIcon = styled(Avatar)(({ theme }) => ({
   top: theme.spacing(1),
   left: theme.spacing(1),
 }));
+
+const useStyles = makeStyles({
+  scrollBar: {
+    "&::-webkit-scrollbar": {
+      width: "3px",
+    },
+
+    "&::-webkit-scrollbar-track": {
+      boxShadow: "inset 0 0 5px rgb(255, 251, 251)",
+      borderRadius: "10px",
+    },
+ 
+    "&::-webkit-scrollbar-thumb": {
+      background: "#077DFA",
+      borderRadius: "10px",
+    },
+
+    "&::-webkit-scrollbar-thumb:hover": {
+      background: "rgb(255, 251, 251)",
+    }
+  }
+});
 function EstablishmentResponse(Details, Title = "Establishment Owner's Response", Edited = false){
   return(
     <ThemeProvider theme={Theme}>
@@ -166,16 +235,24 @@ export class View extends React.Component {
         <div className="maincontainer">
               <NameCard>
                 <Typography fontFamily="Roboto"variant="h4">{restaurants.restaurantName}</Typography>
-                <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300">{restaurants.location}
+                <Typography variant="subtitle1" fontFamily="Roboto" fontWeight="300">{restaurants.location}
+                <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
+
+        </Typography>
+        <Typography display="block" variant="body2" fontFamily="Roboto" fontWeight="300">{restaurants.description}
+        </Typography>
+        <Typography display="block" variant="body2" fontFamily="Roboto" fontWeight="300">Landmarks: {restaurants.landmarks}
         </Typography>
         <Divider sx={{ borderBottomWidth: 3, marginBottom: 1, marginTop: 1,}}/>
         {restaurants.avgrating && ReadStarRating(restaurants.avgrating)}<Typography variant="caption" fontFamily="Roboto" fontWeight="300">({restaurants.numreviews} Reviews)</Typography>
               </NameCard>
               <ContentCard>
+                {restaurants.mapImage &&
                 <CustomCardMedia
-                  component="img"
-                  src={maps[this.state.restaurantid]}                
-                />
+                component="img"
+                image={require('./images/'.concat(restaurants.mapImage))}                
+              />
+                }
               </ContentCard>
             {
               this.props.router.location.state.userid != "nouser" && !this.props.router.location.state.isOwner &&
@@ -190,24 +267,35 @@ export class View extends React.Component {
               </div>
             </div> 
             }
+                          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search Reviews"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
               <ReviewsCard>
                 {reviewslist && reviewslist.map((review, reviewIndex) => (
                   <ReviewCard key={reviewIndex}>
                     {/* fix the alignment, track ownership */}
-                    <UserIcon>
+                    <Box ml={5}> 
+                    <div class="align">
+                    <UserIcon sx={{marginTop:"9px", marginLeft:"10px"}}>
                       {review.user[0].firstName && String(review.user[0].firstName).charAt(0).toUpperCase()}
                     </UserIcon>
-                    <Box ml={5}> 
-                    {review.user[0.].firstName && <Button variant="text" onClick={()=>this.props.router.navigate('/home/main/user/'.concat(review.user[0]._id), { state: { userid: this.props.router.id, viewuser : review.user[0]._id, currlocation: "profile"}})} color="secondary">
+                    {review.user[0.].firstName && <Button variant="text" onClick={()=>this.props.router.navigate('/home/main/user/'.concat(review.user[0]._id), { state: { userid: this.props.router.id, viewuser : review.user[0]._id, currlocation: "profile", isOwner: this.props.router.isOwner}})} color="secondary">
                       <Typography  fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
                       </Button>}
+                      </div>
                       {ReadStarRating(review.rating)}
                       {ReviewBox(review.review, "Review")}
                       {review.ownerresponse && EstablishmentResponse(review.ownerresponse)}
                     </Box>
                     <ButtonGroup variant="outlined" aria-label="Basic button group">
                       {
-                          this.props.router.location.state.isOwner && this.props.router.location.state.userid !=review.reviewerID &&                 
+                          this.props.router.location.state.isOwner && this.props.router.location.state.userid !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.props.router.location.state.isOwner &&               
                            <Button color="secondary" variant="outlined" aria-label="Helpful" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
                       }{
                         this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
@@ -237,13 +325,15 @@ export class View extends React.Component {
   
   
                       </ButtonGroup>
-                      <Collapse in={this.state.expandedId === reviewIndex && review.userid == this.state.id && !this.props.router.location.state.isOwner} timeout="auto" unmountOnExit>
+                      <Collapse in={this.state.expandedId === reviewIndex && !this.props.router.location.state.isOwner} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                      <HeaderButton2>Edit</HeaderButton2>
                         </Collapse>
-                        <Collapse in={this.state.expandedId === reviewIndex} timeout="auto" unmountOnExit>
+                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.props.router.location.state.isOwner } timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
+                      <HeaderButton2>Reply As Owner</HeaderButton2>
                         </Collapse>
                   </ReviewCard>
                 ))}
