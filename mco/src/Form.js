@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import './css/index.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Typography} from '@mui/material';

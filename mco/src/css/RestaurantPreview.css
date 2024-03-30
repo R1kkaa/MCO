@@ -19,14 +19,10 @@
     flex-direction: column;
     align-items: flex-end;
 }
-.align{
+.user-review-image{
     display: flex;
-    flex-direction: row;
-    align-items:start;
-    vertical-align: center;
-    align-content: start;
-    text-align: start;
-
+    flex-direction: column;
+    align-items: flex-start;
 }
 .user-comment{
     width:98%
@@ -38,5 +34,21 @@
     align-items: center;
     justify-content: space-between;
     padding-right: 50px;
+    padding-bottom: 10px;
+}
+.review-buttons{
+    width: 40%;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 50px;
+    padding-bottom: 10px;
+}
+
+.review-buttons2{
+    width: 100%;
+    display:flex;
+    align-items: center;
+    justify-content: flex-end;
     padding-bottom: 10px;
 }

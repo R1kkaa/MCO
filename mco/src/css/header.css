@@ -11,12 +11,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 33%;
+    width: 38%;
     
 }
 @font-face {
     font-family: 'Italiana-Regular';
-    src: local('Italiana-Regular'), url(./fonts/Italiana-Regular.ttf) format('ttf');
+    src: local('Italiana-Regular'), url(.././fonts/Italiana-Regular.ttf) format('ttf');
     /* other formats include: 'woff2', 'truetype, 'opentype',
                               'embedded-opentype', and 'svg' */
   }

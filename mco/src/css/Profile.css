@@ -46,6 +46,11 @@ body {
   margin-left: 4%;
 }
 
+.mainboxdiv2 {
+  margin-left: 4%;
+  padding-bottom: 10%;
+}
+
 .editmainboxdiv {
   margin-left: 4%;
   display: flex;
@@ -69,7 +74,7 @@ body {
  text-align: left;
  margin-top: -31%;
  margin-left: 35%;
- font-size: 43px;
+ font-size: 30px;
  font-weight: bold;
  color: rgb(246, 241, 235);
  text-shadow: 2px 2px 8px black;
@@ -89,7 +94,7 @@ body {
   text-align: left;
   margin-top: 0%;
   margin-left: 35%;
-  font-size: 38px;
+  font-size: 25px;
   font-weight: normal;
   color: rgb(246, 241, 235);
 
@@ -140,11 +145,23 @@ body {
   vertical-align: middle;
   box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+.picturebox2 {
+  padding: auto;
+  margin-top: -7.5%;
+  background-color: #FFBF5F;
+  border-radius: 3px 25px;
+  width: 30%;
+  height: 470px;
+  margin-left: 2%;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 
 .profilepic {
   border-radius: 3px 25px;
-  width: 100%;
-  height: 246px
+  width: 374px;
+  height: 250px
 }
 
 .maindiv {
@@ -204,7 +221,7 @@ textarea {
 
 @font-face {
   font-family: 'Italiana-Regular';
-  src: local('Italiana-Regular'), url(./fonts/Italiana-Regular.ttf) format('ttf');
+  src: local('Italiana-Regular'), url(.././fonts/Italiana-Regular.ttf) format('ttf');
   /* other formats include: 'woff2', 'truetype, 'opentype',
                             'embedded-opentype', and 'svg' */
 }

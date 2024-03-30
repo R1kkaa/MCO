@@ -1,5 +1,5 @@
 import React from 'react';
-import './Profile.css';
+import './css/Profile.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Stack, Typography} from '@mui/material';
@@ -91,6 +91,9 @@ export function Body(){
     id = location.state.userid
     viewuser = location.state.viewuser
   }
+  else{
+    viewuser = window.location.href.split("/")[6]
+  }
   return(
   <body>
   <span class="maindiv">
@@ -160,7 +163,9 @@ class BoxSx extends React.Component {
       lastname: "",
       username: "",
       description: "",
-      reviewslist: []
+      reviewslist: [],
+      imagelocation: "",
+      imgdefault: "https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="
     };
     }
     componentDidMount() {
@@ -171,7 +176,7 @@ class BoxSx extends React.Component {
           lastname: response.data.lastName,
           username: response.data.username,
           description: response.data.description,
-
+          imagelocation: response.data.imageurl
         });
           }, error => {
         console.log(error);
@@ -186,7 +191,7 @@ class BoxSx extends React.Component {
       });
     }
   render(){
-      const {firstname, lastname, username, description, reviewslist} = this.state;
+      const {firstname, lastname, username, description, reviewslist, imagelocation} = this.state;
       return(
       <ThemeProvider theme={Theme}>
     <Box
@@ -209,9 +214,15 @@ class BoxSx extends React.Component {
           objectFit: 'cover',
           }}
       />
+                          {this.props.router.id == this.props.router.viewuser && 
+<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '1140px', marginTop: '-36%'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser, description: description, imageurl: imagelocation}})}>Edit Profile</HeaderButton>      
+}
+{this.props.router.id != this.props.router.viewuser && 
+<HeaderButton variant="outlined" disabled style={{boxShadow: '2px 3px 5px #000000', marginLeft: '1140px', marginTop: '-36%', opacity: '0%'}}></HeaderButton>      
+}
       <div class="mainboxdiv">
-        <div class="picturebox">
-            <img class="profilepic" src="https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="/>
+        <div class="picturebox2">
+            {imagelocation && <img class="profilepic" src={process.env.PUBLIC_URL+imagelocation} />}
             <div class="descriptioncontainer">
                 <p> {description} </p>
             </div>
@@ -220,9 +231,6 @@ class BoxSx extends React.Component {
         <div>
             <div class="namecontainer">
             {firstname.concat(" ").concat(lastname)}<br/>
-{this.props.router.id == this.props.router.viewuser && 
-<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '340px'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser}})}>Edit Profile</HeaderButton>      
-}
             </div>
             <div class="usernamecontainer">
             {username}<br/>

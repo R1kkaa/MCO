@@ -1,6 +1,6 @@
-import React from 'react';
-import './Profile.css';
-import './index.css';
+import React, { useRef } from 'react';
+import './css/Profile.css';
+import './css/index.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Stack, Typography} from '@mui/material';
@@ -22,7 +22,12 @@ import Card from '@mui/material/Card';
 import { ReviewBox } from './RestaurantPreview';
 import { useNavigate } from 'react-router-dom';
 import {ThemeTextField} from './Login';
-import { InputFileUpload } from './Register';
+import { VisuallyHiddenInput } from './Register';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios'
+
+
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
@@ -96,21 +101,71 @@ const RegisterButton = styled(Button)(({ theme }) => ({
   fontWeight: "400"
   
 }));
+
+
 function BoxSx() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const id = searchParams.get('viewuserid');  
-  const loggedid = searchParams.get('userid');  
   let navigate = useNavigate();
-    function viewprofile(){
-    let link = "/home/main?userid="
-      link = link.concat(String(id))
-    navigate(link, {state:{id:id}})
-    return null;
+  let location = useLocation();
+  var id = "nouser"
+  var viewuser = "nouser"
+  var imageurl = "https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="
+  var description = ""
+  let descriptionRef = useRef("");  
+  if(location.state){
+    id = location.state.userid
+    description = location.state.description
+    imageurl = location.state.imageurl
+    viewuser = location.state.viewuser
   }
+  
+  let [currimg, setImg] = useState(imageurl)
+  let [currdesc, setDesc] = useState(description)
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  useEffect(() => {
+    if (selectedImage) {
+      setImg(URL.createObjectURL(selectedImage));
+    }
+    else{
+      setImg(imageurl)
+    }
+  }, [selectedImage]);
+  
+
+  const getFileInfo = (e) => {
+    //NOTE THE ADDITION OF 'e' PARAMETER
+       setSelectedImage(e.target.files[0]);
+     }
+
+
+  const update = () => {
+    let data = {
+      description: currdesc,
+      newimage: false
+    }
+    if(selectedImage){
+      data = {description: currdesc, newimage: true}
+    }
+    axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile"), data).then(response => {
+      if(selectedImage){
+        const newimage = new FormData(); 
+        const filename = id.concat("_avatar.")
+        const type = selectedImage.type.split("image/")[1]
+        newimage.append('my-image-file', selectedImage, filename+type)
+        newimage.append('id', response.data)
+        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload"), newimage).then(response2 => {
+          navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
+        })
+      }
+      else{
+        navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
+      }
+    })
+  }
   return (
     <ThemeProvider theme={Theme}>
-    <Box
+    {id != "nouser" && <Box
         sx={{
           width: 1300,
           height: 660,
@@ -132,23 +187,13 @@ function BoxSx() {
       />
       <div class="editmainboxdiv">
         <div class="picturebox">
-            <form id="profileForm" enctype="multipart/form-data">
-                <img id="profileImage" class="profilepic" src="https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="/>
-            </form>
-        </div>
+        {!selectedImage && imageurl && <img class="profilepic" src={process.env.PUBLIC_URL+currimg} /> }
+        {selectedImage && imageurl && <img class="profilepic" src={currimg} /> }
+                <div class="descriptioncontainer">
+                <p> {currdesc} </p>
+            </div>        </div>
         
-        <BoxSx2></BoxSx2>
-      </div>
-        
-    </Box>
-    </ThemeProvider>
-  );
-}
-function BoxSx2() {
-  const navigate = useNavigate();
-  return (
-    <ThemeProvider theme={Theme}>
-    <Box
+            <Box
         sx={{
           width: 600,
           height: 600,
@@ -162,21 +207,21 @@ function BoxSx2() {
       >
         <div class="editdiv">
         <Typography variant="h2" fontFamily="Roboto" color="secondary">Edit Profile</Typography>     
-
-        <span class="registerinput1"> 
-          <ThemeTextField  id="email" size="small" label="Username" variant="filled" color="secondary" sx={{opacity: 1, width: '65ch',  input: { color: 'primary.dark' } }}/>
-        </span>
         <span class="registerinput2">      
-          <ThemeTextField multiline row={4} maxRows={4} id="description" size="small" label="Description" variant="filled" color="secondary" sx={{opacity: 1, width: '65ch'}}/>
+          <ThemeTextField multiline row={4} maxRows={4} inputRef={descriptionRef} onChange={()=>setDesc(descriptionRef.current.value)} defaultValue={description} id="description" size="small" label="Description" variant="filled" color="secondary" sx={{opacity: 1, width: '65ch'}}/>
         </span>
-        <span class="centercol">        {InputFileUpload()}
-<RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}}>
-    Save </RegisterButton></span>
-
-        </div>
+        <span class="centercol">
+        <RegisterButton component="label" variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}}>
+        Upload Avatar 
+        <VisuallyHiddenInput type="file" onChange={getFileInfo} accept="image/*"/>
+        </RegisterButton>
+        <RegisterButton onClick={update} variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}}>
+        Save </RegisterButton></span>
+        </div> 
+      </Box>      </div>
         
-      </Box>
-      </ThemeProvider>
+    </Box>}
+    </ThemeProvider>
   );
 }
 // If you want to start measuring performance in your app, pass a function

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
-import './header.css';
+import './css/header.css';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -87,7 +87,7 @@ export const HeaderButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#bf7e1d',
     color: 'black',
   },
-  minWidth: '150px', 
+  minWidth: '180px', 
   fontFamily: "Roboto" ,
   fontWeight: "400"
   

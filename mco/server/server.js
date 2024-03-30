@@ -3,18 +3,21 @@ const app = express();
 const port = 5000;
 const axios = require('axios');
 const mongodb = require('mongodb')
-
+const fs = require('fs');
 const cors = require("cors");
+const multer = require("multer")
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
 app.use(cors());
 
-
 const mongoose = require("mongoose");
+const path = require('path');
 const  Schema  = mongoose.Schema;
 mongoose.connect('mongodb://127.0.0.1:27017/MCODB').then(() =>  console.log("Database Connection Success"))
 .catch((err) => { console.error(err); });
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
@@ -24,7 +27,9 @@ const userSchema = new Schema({
   email: String,
   password: String,
   username: String,
-  isOwner: Boolean
+  isOwner: Boolean,
+  description: String,
+  imageurl: String,
 })
 const users = mongoose.model('User', userSchema);
 async function getusers(){
@@ -46,12 +51,14 @@ async function getrestaurants(){
   return restaurantquery;
 }
 const reviewsSchema = new Schema({
-  restaurantID: String,
-  reviewerID: String,
+  restaurantID: mongodb.ObjectId,
+  reviewerID: mongodb.ObjectId,
   review: String,
   rating: Number,
   helpful: Number,
-  unhelpful: Number
+  unhelpful: Number,
+  ownerresponse: String,
+  imageurl: String,
 })
 const reviews = mongoose.model('Review', reviewsSchema);
 
@@ -108,8 +115,90 @@ async function getuserreviews(id){
 //post userdata for login
 app.post('/home/login', async function (req, res) {
   var val = await getusers()
+  console.log("true")
   res.send(val)
 });
+
+const storage = multer.diskStorage({
+  destination: './public/users',
+  filename: function(req, file, cb) {
+    cb(null, `${file.originalname}`)
+  }
+})
+const upload = multer({storage: storage})
+
+
+//app.post('/home/register/data', upload.array("my-image-file"), async function (req, res) {
+//get register data
+
+app.post('/home/register', async function (req, res) {
+  newuser = new users()
+  newuser.firstName = req.body.firstName
+  newuser.lastName = req.body.lastName
+  newuser.email = req.body.email
+  newuser.password = req.body.password
+  newuser.username = req.body.username
+  newuser.isOwner = false
+  newuser.description = req.body.description
+  newuser.save().then(function(result){
+    res.send(String(result['_id']))
+   })
+});
+
+app.post('/home/register/upload', upload.array("my-image-file"), async function (req, res) {
+  id = (JSON.parse(JSON.stringify(req.body))).id
+  users.findById(id).then((document) =>{
+    document.imageurl = "/users/".concat(req.files[0].originalname)
+    document.save()
+  })
+  res.send(req.body)
+});
+
+app.post('/review', async function (req, res) {
+  newreview = new reviews()
+  newreview.restaurantID = mongodb.ObjectId.createFromHexString(req.body.restaurantid)
+  newreview.reviewerID = mongodb.ObjectId.createFromHexString(req.body.userid)
+  newreview.review = req.body.review
+  newreview.rating = req.body.rating
+  newreview.helpful = 0
+  newreview.unhelpful = 0
+  newreview.ownerresponse = ""
+  newreview.save().then(function(result){
+    res.send(String(result['_id']))
+   })
+});
+
+app.post('/review/upload', upload.array("my-image-file"), async function (req, res) {
+  id = (JSON.parse(JSON.stringify(req.body))).id
+  reviews.findById(id).then((document) =>{
+    document.imageurl = "/reviewmedia/".concat(req.files[0].originalname)
+    document.save()
+  })
+  res.send(req.body)
+});
+
+app.post('/user/:id/editprofile', async function (req, res){
+  console.log(req.params.id)
+  users.findById(req.params.id).then((document) =>{
+    document.description = req.body.description
+    if(req.body.newimage){
+      fs.unlink("./public"+document.imageurl, (err) => err && console.error(err));
+    }
+    document.save()
+    res.send(document)
+  })
+})
+
+app.post('/user/:id/editprofile/upload', upload.array("my-image-file"), async function (req, res){
+  console.log(req.params.id)
+  users.findById(req.params.id).then((document) =>{
+    document.imageurl = "/users/".concat(req.files[0].originalname)
+    document.save()
+    res.send(document)
+  })
+  
+})
+
 
 //all restaurants data
 app.get('/restaurants', async function (req, res) {

@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import './RestaurantPreview.css';
+import './css/RestaurantPreview.css';
 import Divider from '@mui/material/Divider';
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';

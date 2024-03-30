@@ -1,6 +1,6 @@
 import React from 'react';
 import reportWebVitals from './reportWebVitals';
-import './RestaurantPreview.css';
+import './css/RestaurantPreview.css';
 import { Box, Typography, Button, Rating, CardMedia, Avatar, TextField } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { Theme } from './themes';
@@ -25,7 +25,8 @@ import  axios  from 'axios';
 import { alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { VisuallyHiddenInput } from './Register';
+import { useRef } from 'react';
 export const HeaderButton2 = styled(Button)(({ theme }) => ({
   color: '#454545',
   backgroundColor: Theme.palette.primary.light, 
@@ -164,6 +165,9 @@ function EstablishmentResponse(Details, Title = "Establishment Owner's Response"
 export function Body() {
   let navigate = useNavigate();
   const location = useLocation();
+  let newreviewRef = useRef();
+  let editreviewRef = useRef();
+
   var id = "nouser"
   var isOwner = false
   if(location.state){
@@ -171,7 +175,7 @@ export function Body() {
     isOwner = location.state.isOwner
   }
   return <View        
-        router={{ location, navigate, id, isOwner}}
+        router={{ location, navigate, id, isOwner, newreviewRef, editreviewRef}}
       />
 }
 
@@ -182,7 +186,13 @@ export class View extends React.Component {
       restaurants: [],
       reviewslist: [],
       expandedId: -1,
-      value: 0
+      value: 0,
+      editvalue: 0,
+      image: null,
+      selectedImage : null,
+      imageUrl: null,
+      currreview: "",
+      editreview: ""
     };
     }
     componentDidMount() {
@@ -197,18 +207,69 @@ export class View extends React.Component {
       axios.get("http://localhost:5000/restaurants/".concat(this.props.router.location.state.restaurantid).concat("/reviews")).then(response => 
       {
         this.setState({
-          reviewslist: response.data,
+          reviewslist: response.data.reverse(),
         });
           }, error => {
         console.log(error);
       });
     }
+    
+    getFileInfo = (e) => {
+      this.setState({
+        selectedImage: e.target.files[0]
+    },  () => {
+      if (this.state.selectedImage) {
+        this.setState({
+          imageUrl: URL.createObjectURL(this.state.selectedImage)
+      })
+      }
+      })    
+         const formData = new FormData(); 
+         //FILE INFO NAME WILL BE "my-image-file"
+         formData.append('my-image-file', e.target.files[0]);
+         this.setState({
+          image: formData
+      })
+      }
 
+    formvalidation = () => {
+      if(this.state.currreview.trim() == ""){
+        alert("Review cannot be empty.")
+      }else{
+        let data = {
+          userid: this.props.router.location.state.userid,
+          restaurantid: this.props.router.location.state.restaurantid,
+          review: this.state.currreview,
+          rating: this.state.value,
+        }
+        axios.post('http://localhost:5000/review', data).then(response => {
+          if(this.selectedImage){
+            const newimage = new FormData(); 
+            const filename = String(response.data).concat("_review.")
+            const type = this.selectedImage.type.split("image/")[1]
+            newimage.append('my-image-file', this.selectedImage, filename+type)
+            newimage.append('id', response.data)
+            axios.post('http://localhost:5000/review/upload', newimage).then(response2 => {
+              window.location.reload();
+                      })
+        }
+        else{
+          window.location.reload();
+        }})
+      }
+    }
+    handletype = (e) => {
+      this.setState({
+        currreview: e.target.value
+    })
+    }
     render(){
-      const {restaurants, reviewslist, expandedId, value} = this.state;
+      const {restaurants, reviewslist, expandedId, value, editvalue, image, selectedImage, imageUrl} = this.state;
+
       const handleExpandClick = i => {
         this.setState({
-          expandedId: this.state.expandedId === i ? -1 : i
+          expandedId: this.state.expandedId === i ? -1 : i,
+          editvalue: 0
       })}
       return (
       <ThemeProvider theme={Theme}>
@@ -235,15 +296,28 @@ export class View extends React.Component {
                 }
               </ContentCard>
             {
+              //add new reviews
               this.props.router.location.state.userid != "nouser" && !this.props.router.location.state.isOwner &&
               <div class="user-review">
               <div class = "user-comment">
-                <Input id="user-comment" size="small" variant="filled" placeholder = "Write a review..." sx={{width: '95%',margin:'10px'}}/>
+              <Typography variant='h6' color="primary.dark" fontFamily="Roboto" fontWeight="200"><div>Write a Review:</div></Typography>
+              {<Input multiline rows={1} onChange={this.handletype} maxRows={5} id="user-comment" size="small" variant="filled"  sx={{width: '95%',margin:'10px'}}/>}
+                {this.state.imageUrl && this.state.selectedImage && (
+                  <div class="user-review-image">
+        <Box  textAlign="center">
+          <Typography variant='body2' color="primary.dark" fontFamily="Roboto" fontWeight="100"><div>Image Preview:</div></Typography>
+          <img src={imageUrl} alt={selectedImage.name} width="400px" height="300px" />
+        </Box>
+        </div>
+      )} 
               </div>
               <div class = "review-buttons">
                 <StyledRating precision={0.5} name="simple-controlled" value={this.state.value} onChange={(event, newValue) => {this.setState({value:newValue})}}/>
-                <HeaderButton>Upload File</HeaderButton>
-                <HeaderButton>Comment</HeaderButton>
+                <HeaderButton component="label">
+                <VisuallyHiddenInput type="file" onChange={this.getFileInfo} accept="image/*"/>
+                Upload Image 
+                </HeaderButton>                
+                <HeaderButton onClick={this.formvalidation}>Comment</HeaderButton>
               </div>
             </div> 
             }
@@ -302,15 +376,16 @@ export class View extends React.Component {
                             <Button color="secondary" href="/home/register" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
                             )
                     }
-  
-  
                       </ButtonGroup>
-                      <Collapse in={this.state.expandedId === reviewIndex && !this.props.router.location.state.isOwner} timeout="auto" unmountOnExit>
+                      <Collapse in={this.state.expandedId === reviewIndex && !this.props.router.isOwner} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
-                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '95%',margin:'10px'}}/>}
+                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" defaultValue  = {review.review} sx={{width: '100%',margin:'10px'}}/>}
+                      <div class = "review-buttons2">
+                      <StyledRating precision={0.5} name="edit-rating" value={this.state.editvalue} onChange={(event, newValue2) => {this.setState({editvalue:newValue2})}}/>
                       <HeaderButton2>Edit</HeaderButton2>
+                      </div>
                         </Collapse>
-                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.props.router.location.state.isOwner } timeout="auto" unmountOnExit>
+                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.props.router.isOwner && review.ownerresponse == ""} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
                       <HeaderButton2>Reply As Owner</HeaderButton2>

@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import './css/index.css';
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Typography} from '@mui/material';
@@ -49,8 +49,8 @@ export const ThemeTextField = styled(TextField)({
 
 function BoxSx() {
   const navigate = useNavigate();
-  const emailRef = useRef(); //creating a refernce for TextField Component
-  const passwordRef = useRef(); //creating a refernce for TextField Component
+  const emailRef = useRef();
+  const passwordRef = useRef();
   const [valid, setValid] = useState(1);
   const loguser = () => {
     
@@ -86,7 +86,7 @@ function BoxSx() {
           <ThemeTextField error={valid==0 } onClick={typevalid} inputRef={emailRef} id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch',  input: { color: 'primary.dark' } }}/>
         </span>
         <span class="registerinput2">      
-          <ThemeTextField error={valid==0} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField error={valid==0} onClick={typevalid} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         <FormControlLabel control={<Checkbox defaultChecked color="secondary"/>} label="Remember me?" />
         </span>
         <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} onClick={loguser}>
