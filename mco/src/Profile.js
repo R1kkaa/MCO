@@ -18,7 +18,6 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
-import { ReviewBox } from './RestaurantPreview';
 import { useNavigate } from 'react-router-dom';
 import { restaurantreviews } from './util';
 import {restaurants as restaurantnames} from './util';
@@ -105,9 +104,21 @@ export function Body(){
   </body>
   );
 };
-function ReviewBoxWithStar(Details, Rating, Title = "Featured Review", Edited = false){
+function ReviewBoxWithStar(Details, Rating, Title = "Featured Review", Edited = false, ReviewImage = null, location = null){
   return(
     <ThemeProvider theme={Theme}>
+      <Box
+          sx={{
+            width: 500,
+            borderRadius: 1,
+            bgcolor: 'primary.main',
+            alignItems: 'center',
+            padding: '10px',
+            marginLeft: '10px',
+            marginTop: '10px',
+            marginBottom: '10px',
+        
+            }}>
     <Box         
     sx={{
     width: 500,
@@ -115,18 +126,20 @@ function ReviewBoxWithStar(Details, Rating, Title = "Featured Review", Edited = 
     borderRadius: 1,
     bgcolor: 'primary.main',
     alignItems: 'center',
-    padding: '10px',
-    marginLeft: '10px',
     marginTop: '10px',
     marginBottom: '10px',
 
     }}>
       <Typography variant="h6" display="inline">{Title}{
         Edited && " ( Edited )"
-      }{ReadStarRating(Rating)}
-      </Typography>
+      }</Typography>
+      {location && <Typography variant="body2" >{location}</Typography>}
+      {ReadStarRating(Rating)}
       <Divider sx={{ borderBottomWidth: 3}}/>
-      <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
+
+      <Typography fontFamily="Roboto" variant="caption">{Details}</Typography> <br/>
+      </Box>
+      {ReviewImage && <img src={process.env.PUBLIC_URL+ReviewImage} width="300px" height="225px" />}
       </Box>
     </ThemeProvider>
     )
@@ -244,7 +257,7 @@ class BoxSx extends React.Component {
               <Typography variant="h6">Reviews and Comments</Typography>   
               {reviewslist.map((review, reviewIndex) => (
                   <span>
-                  {ReviewBoxWithStar(review.review, review.rating, review.restaurant[0].restaurantName)}
+                  {ReviewBoxWithStar(review.review, review.rating, review.restaurant[0].restaurantName, review.edited, review.imageurl, review.restaurant[0].location)}
                   </span>
               ))}
   </div>

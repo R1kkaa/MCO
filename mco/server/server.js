@@ -15,6 +15,7 @@ app.use(cors());
 
 const mongoose = require("mongoose");
 const path = require('path');
+const e = require('express');
 const  Schema  = mongoose.Schema;
 mongoose.connect('mongodb://127.0.0.1:27017/MCODB').then(() =>  console.log("Database Connection Success"))
 .catch((err) => { console.error(err); });
@@ -32,6 +33,7 @@ const userSchema = new Schema({
   imageurl: String,
 })
 const users = mongoose.model('User', userSchema);
+
 async function getusers(){
   const userquery = await users.find({})
   return JSON.stringify(userquery);
@@ -59,6 +61,7 @@ const reviewsSchema = new Schema({
   unhelpful: Number,
   ownerresponse: String,
   imageurl: String,
+  edited: Boolean
 })
 const reviews = mongoose.model('Review', reviewsSchema);
 
@@ -66,6 +69,75 @@ async function getreviews(){
   const reviewquery = await reviews.find({})
   return reviewquery;
 }
+
+const reviewsratingSchema = new Schema({
+  reviewID: mongodb.ObjectId,
+  reviewerID: mongodb.ObjectId,
+  helpful: Boolean,
+  unhelpful: Boolean,
+})
+const reviewsratings = mongoose.model('Reviewsrating', reviewsratingSchema) 
+
+async function getavgrating(id){
+  var val = await reviews.aggregate([{
+    $match: {
+      restaurantID: mongodb.ObjectId.createFromHexString(id)
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      fieldN: { $avg: '$rating' }
+    }
+  }])
+  val[0].fieldN = val[0].fieldN.toFixed(2)
+  return val[0].fieldN
+}
+
+async function getnumreviews(id){
+  var val = await reviews.aggregate([{
+    $match: {
+      restaurantID: mongodb.ObjectId.createFromHexString(id)
+    }
+  },
+  {
+    $count: 'rating'
+  }])
+  return val[0].rating
+}
+
+async function gethelpful(id){
+  var val = await reviewsratings.aggregate([{
+    $match: {
+      reviewID: mongodb.ObjectId.createFromHexString(id),
+      helpful: true
+    }
+  },
+  {
+    $count: 'helpful'
+  }])
+  if(val[0])
+  return val[0].helpful
+  else
+  return 0
+}
+
+async function getunhelpful(id){
+  var val = await reviewsratings.aggregate([{
+    $match: {
+      reviewID: mongodb.ObjectId.createFromHexString(id),
+      unhelpful: true
+    }
+  },
+  {
+    $count: 'unhelpful'
+  }])
+  if(val[0])
+  return val[0].unhelpful
+  else
+  return 0
+}
+
 async function getfeaturedreviews(restaurant){
     var val = await reviews.aggregate([{
       $match:{
@@ -119,17 +191,23 @@ app.post('/home/login', async function (req, res) {
   res.send(val)
 });
 
-const storage = multer.diskStorage({
+const storageusers = multer.diskStorage({
   destination: './public/users',
   filename: function(req, file, cb) {
     cb(null, `${file.originalname}`)
   }
 })
-const upload = multer({storage: storage})
 
+const storagemedia = multer.diskStorage({
+  destination: './public/reviewmedia',
+  filename: function(req, file, cb) {
+    cb(null, `${file.originalname}`)
+  }
+})
 
-//app.post('/home/register/data', upload.array("my-image-file"), async function (req, res) {
-//get register data
+const uploaduserimage = multer({storage: storageusers})
+const uploadreviewimage = multer({storage: storagemedia})
+
 
 app.post('/home/register', async function (req, res) {
   newuser = new users()
@@ -145,7 +223,7 @@ app.post('/home/register', async function (req, res) {
    })
 });
 
-app.post('/home/register/upload', upload.array("my-image-file"), async function (req, res) {
+app.post('/home/register/upload', uploaduserimage.array("my-image-file"), async function (req, res) {
   id = (JSON.parse(JSON.stringify(req.body))).id
   users.findById(id).then((document) =>{
     document.imageurl = "/users/".concat(req.files[0].originalname)
@@ -163,12 +241,16 @@ app.post('/review', async function (req, res) {
   newreview.helpful = 0
   newreview.unhelpful = 0
   newreview.ownerresponse = ""
-  newreview.save().then(function(result){
-    res.send(String(result['_id']))
+  newreview.save().then(async function(result){
+    let rating = await getavgrating(req.body.restaurantid)
+    let numreviews = await getnumreviews(req.body.restaurantid)
+    restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
+      res.send(String(result['_id']))
+    })
    })
 });
 
-app.post('/review/upload', upload.array("my-image-file"), async function (req, res) {
+app.post('/review/upload', uploadreviewimage.array("my-image-file"), async function (req, res) {
   id = (JSON.parse(JSON.stringify(req.body))).id
   reviews.findById(id).then((document) =>{
     document.imageurl = "/reviewmedia/".concat(req.files[0].originalname)
@@ -189,7 +271,7 @@ app.post('/user/:id/editprofile', async function (req, res){
   })
 })
 
-app.post('/user/:id/editprofile/upload', upload.array("my-image-file"), async function (req, res){
+app.post('/user/:id/editprofile/upload', uploaduserimage.array("my-image-file"), async function (req, res){
   console.log(req.params.id)
   users.findById(req.params.id).then((document) =>{
     document.imageurl = "/users/".concat(req.files[0].originalname)
@@ -233,6 +315,78 @@ app.get('/reviews', async function (req, res) {
   res.send(val)
 });
 
+app.post('/reviews/:id/edit', async function (req, res) {
+  console.log(req.body)
+  reviews.findById(req.params.id).then(async function(document){
+    document.review = req.body.review
+    document.rating = req.body.rating
+    document.edited = true
+    document.save().then(async function (response){
+      let rating = await getavgrating(req.body.restaurantid)
+      let numreviews = await getnumreviews(req.body.restaurantid)
+      restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
+        res.send(document)
+      })
+    })
+  })
+});
+
+app.post('/reviews/:id/delete', async function (req, res) {
+  reviews.findByIdAndDelete(req.params.id).then(async function(response) {
+    let rating = await getavgrating(req.body.restaurantid)
+    let numreviews = await getnumreviews(req.body.restaurantid)
+    restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
+      res.send("deleted")
+    })  })
+});
+
+app.post('/reviews/:id/mark', async function (req,res){
+  let reviewID = mongodb.ObjectId.createFromHexString(req.params.id)
+  let userID = mongodb.ObjectId.createFromHexString(req.body.userid)
+  reviewsratings.exists({reviewID: reviewID, reviewerID: userID }).then(result => {
+    if(result){
+      reviewsratings.findById(result._id).then(response => {
+        if(response.helpful == req.body.mark){
+          reviewsratings.findByIdAndDelete(response._id).then(response2 => {
+            res.send('success')
+          })
+        }else{
+          reviewsratings.findByIdAndUpdate(response._id, {helpful: req.body.mark, unhelpful: !req.body.mark}).then(response2 => {
+            res.send('success')
+          })
+        }
+      })
+    }else{
+      var reviewmark = new reviewsratings()
+      reviewmark.reviewID = reviewID
+      reviewmark.reviewerID = userID
+      reviewmark.helpful = req.body.mark
+      reviewmark.unhelpful = !req.body.mark
+      reviewmark.save().then(response => {
+        res.send('success')
+      })  }
+  })
+}
+)
+
+app.post('/marks/:id', async function (req,res){
+  let val1 = await gethelpful(req.params.id)
+  let val2 = await getunhelpful(req.params.id)
+   console.log(val1)
+   console.log(val2)
+   reviews.findById(req.params.id).then(response => {
+    if(response){
+      response.helpful = val1
+      response.unhelpful = val2
+      response.save().then(next => {
+        res.send({helpful: val1, unhelpful: val2})
+      })
+    }
+    else{
+      res.send({helpful: val1, unhelpful: val2})
+    }
+   })
+})
 //user data
 app.get('/user/:id', async function (req, res){
   var val = await users.findOne({_id: req.params.id}).

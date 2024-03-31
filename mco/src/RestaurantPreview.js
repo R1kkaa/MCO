@@ -65,18 +65,28 @@ const Item = styled(Card, options)(({ theme=Theme, hoverShadow = 1 }) => ({
     boxShadow: theme.shadows[hoverShadow]},
 }));
 
-export function ReviewBox(Details, Title = "Featured Review", Edited = false){
+export function ReviewBox(Details, Title = "Featured Review", Edited = false, ReviewImage = null){
   return(
     <ThemeProvider theme={Theme}>
+      <Box
+          sx={{
+            width: 500,
+            borderRadius: 1,
+            bgcolor: 'primary.main',
+            alignItems: 'center',
+            padding: '10px',
+            marginLeft: '10px',
+            marginTop: '10px',
+            marginBottom: '10px',
+        
+            }}>
     <Box         
     sx={{
     width: 500,
-    height: 100,
+    height: 150,
     borderRadius: 1,
     bgcolor: 'primary.main',
     alignItems: 'center',
-    padding: '10px',
-    marginLeft: '10px',
     marginTop: '10px',
     marginBottom: '10px',
 
@@ -87,6 +97,8 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false){
       </Typography>
       <Divider sx={{ borderBottomWidth: 3}}/>
       <Typography fontFamily="Roboto" variant="caption">{Details}</Typography>
+      </Box>
+      {ReviewImage && <img src={process.env.PUBLIC_URL+ReviewImage} width="400px" height="300px" />}
       </Box>
     </ThemeProvider>
     )
@@ -183,7 +195,6 @@ export class Preview extends React.Component {
   <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline">Filter Restaurants By Rating
       </Typography>
       <Filter/>
-      <FormControlLabel control={<Checkbox color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"Sort Alphabetically: "} </Typography>} labelPlacement='start'/>
     </Box>
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
