@@ -192,7 +192,8 @@ export class View extends React.Component {
       selectedImage : null,
       imageUrl: null,
       currreview: "",
-      editreview: ""
+      editreview: "",
+      searchparams: ""
     };
     }
     componentDidMount() {
@@ -269,6 +270,11 @@ export class View extends React.Component {
         editreview: e.target.value
     })
   }
+  editSearchParams = (e) => {
+    this.setState({
+      searchparams: e.target.value.toLowerCase().trim()
+  })
+}
     submitedit = (reviewIndex) => {
       let review = {
         reviewid: this.state.reviewslist[reviewIndex]["_id"],
@@ -370,12 +376,11 @@ export class View extends React.Component {
             <StyledInputBase
               placeholder="Search Reviews"
               inputProps={{ 'aria-label': 'search' }}
-            />
+            onChange={this.editSearchParams}/>
           </Search>
               <ReviewsCard>
                 {reviewslist && reviewslist.map((review, reviewIndex) => (
-                  <ReviewCard key={reviewIndex}>
-                    {/* fix the alignment, track ownership */}
+                  (review.ownerresponse.toLowerCase().includes(this.state.searchparams) || review.review.toLowerCase().includes(this.state.searchparams) || (review.user[0].firstName.concat(" ").concat(review.user[0].lastName)).toLowerCase().includes(this.state.searchparams)) && <ReviewCard key={reviewIndex}>
                     <Box ml={5}> 
                     <div class="align">
                     <UserIcon sx={{marginTop:"9px", marginLeft:"10px"}}>

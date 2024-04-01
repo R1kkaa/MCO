@@ -181,6 +181,10 @@ class BoxSx extends React.Component {
       imgdefault: "https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="
     };
     }
+    delete(){
+      axios.post("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/deleteprofile"))
+      this.props.router.navigate("/home/login")
+    }
     componentDidMount() {
       axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser)).then(response => 
       {
@@ -228,13 +232,18 @@ class BoxSx extends React.Component {
           }}
       />
                           {this.props.router.id == this.props.router.viewuser && 
-<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000', marginLeft: '1140px', marginTop: '-36%'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser, description: description, imageurl: imagelocation}})}>Edit Profile</HeaderButton>      
+<span style={{display:'flex', flexDirection: 'column'}}>
+<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000',width:'150px', marginLeft: '1140px', marginTop: '-18%'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser, description: description, imageurl: imagelocation}})}>Edit Profile</HeaderButton>      
+<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000',width:'150px', marginLeft: '1140px', marginTop: '0.5%'}} onClick={()=>this.delete()}>Delete Profile</HeaderButton>      
+</span>
 }
+
+
 {this.props.router.id != this.props.router.viewuser && 
 <HeaderButton variant="outlined" disabled style={{boxShadow: '2px 3px 5px #000000', marginLeft: '1140px', marginTop: '-36%', opacity: '0%'}}></HeaderButton>      
 }
       <div class="mainboxdiv">
-        <div class="picturebox2">
+        <div class="picturebox">
             {imagelocation && <img class="profilepic" src={process.env.PUBLIC_URL+imagelocation} />}
             <div class="descriptioncontainer">
                 <p> {description} </p>

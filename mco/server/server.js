@@ -1,24 +1,44 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = 5000;
-const axios = require('axios');
-const mongodb = require('mongodb')
-const fs = require('fs');
+const axios = require("axios");
+const mongodb = require("mongodb");
+const fs = require("fs");
 const cors = require("cors");
-const multer = require("multer")
-var bodyParser = require('body-parser');
-
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-
+const multer = require("multer");
+var bodyParser = require("body-parser");
+const { check, ValidationResult } = require("express-validator");
+const session = require("express-session");
+const store = new session.MemoryStore();
+(bcrypt = require("bcrypt"));
+const passport = require("passport");
+var passportLocalMongoose = require("passport-local-mongoose");
+const LocalStrategy = require("passport-local").Strategy;
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 
+app.use(
+  session({
+    secret: "some-secret",
+    cookie: { maxAge: 30000 },
+    saveUninitialized: false,
+    store,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 const mongoose = require("mongoose");
-const path = require('path');
-const e = require('express');
-const  Schema  = mongoose.Schema;
-mongoose.connect('mongodb://127.0.0.1:27017/MCODB').then(() =>  console.log("Database Connection Success"))
-.catch((err) => { console.error(err); });
+const path = require("path");
+const e = require("express");
+const Schema = mongoose.Schema;
+mongoose
+  .connect("mongodb://127.0.0.1:27017/MCODB")
+  .then(() => console.log("Database Connection Success"))
+  .catch((err) => {
+    console.error(err);
+  });
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
@@ -31,11 +51,40 @@ const userSchema = new Schema({
   isOwner: Boolean,
   description: String,
   imageurl: String,
-})
-const users = mongoose.model('User', userSchema);
+});
 
-async function getusers(){
-  const userquery = await users.find({})
+
+userSchema.pre("save", function (next) {
+  var user = this;
+
+  // only hash the password if it has been modified (or is new)
+  if (!user.isModified("password")) return next();
+
+  // generate a salt
+  bcrypt.genSalt(getRandomInt(100), function (err, salt) {
+    if (err) return next(err);
+
+    // hash the password using our new salt
+    bcrypt.hash(user.password, salt, function (err, hash) {
+      if (err) return next(err);
+      // override the cleartext password with the hashed one
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+userSchema.methods.comparePassword = async function comparePassword(data) {
+  return await bcrypt.compare(data, this.password)
+};
+
+userSchema.plugin(passportLocalMongoose);
+
+const users = mongoose.model("User", userSchema);
+exports.users = users;
+
+async function getusers() {
+  const userquery = await users.find({});
   return JSON.stringify(userquery);
 }
 const restaurantsSchema = new Schema({
@@ -44,12 +93,12 @@ const restaurantsSchema = new Schema({
   description: String,
   owner: String,
   avgrating: Number,
-  numreviews: Number
-})
-const restaurants = mongoose.model('Restaurant', restaurantsSchema);
+  numreviews: Number,
+});
+const restaurants = mongoose.model("Restaurant", restaurantsSchema);
 
-async function getrestaurants(){
-  const restaurantquery = await restaurants.find({})
+async function getrestaurants() {
+  const restaurantquery = await restaurants.find({});
   return restaurantquery;
 }
 const reviewsSchema = new Schema({
@@ -61,12 +110,12 @@ const reviewsSchema = new Schema({
   unhelpful: Number,
   ownerresponse: String,
   imageurl: String,
-  edited: Boolean
-})
-const reviews = mongoose.model('Review', reviewsSchema);
+  edited: Boolean,
+});
+const reviews = mongoose.model("Review", reviewsSchema);
 
-async function getreviews(){
-  const reviewquery = await reviews.find({})
+async function getreviews() {
+  const reviewquery = await reviews.find({});
   return reviewquery;
 }
 
@@ -75,327 +124,424 @@ const reviewsratingSchema = new Schema({
   reviewerID: mongodb.ObjectId,
   helpful: Boolean,
   unhelpful: Boolean,
-})
-const reviewsratings = mongoose.model('Reviewsrating', reviewsratingSchema) 
+});
+const reviewsratings = mongoose.model("Reviewsrating", reviewsratingSchema);
 
-async function getavgrating(id){
-  var val = await reviews.aggregate([{
-    $match: {
-      restaurantID: mongodb.ObjectId.createFromHexString(id)
-    }
-  },
-  {
-    $group: {
-      _id: null,
-      fieldN: { $avg: '$rating' }
-    }
-  }])
-  val[0].fieldN = val[0].fieldN.toFixed(2)
-  return val[0].fieldN
+async function getavgrating(id) {
+  var val = await reviews.aggregate([
+    {
+      $match: {
+        restaurantID: mongodb.ObjectId.createFromHexString(id),
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        fieldN: { $avg: "$rating" },
+      },
+    },
+  ]);
+  val[0].fieldN = val[0].fieldN.toFixed(2);
+  return val[0].fieldN;
 }
 
-async function getnumreviews(id){
-  var val = await reviews.aggregate([{
-    $match: {
-      restaurantID: mongodb.ObjectId.createFromHexString(id)
-    }
-  },
-  {
-    $count: 'rating'
-  }])
-  return val[0].rating
+async function getnumreviews(id) {
+  var val = await reviews.aggregate([
+    {
+      $match: {
+        restaurantID: mongodb.ObjectId.createFromHexString(id),
+      },
+    },
+    {
+      $count: "rating",
+    },
+  ]);
+  return val[0].rating;
 }
 
-async function gethelpful(id){
-  var val = await reviewsratings.aggregate([{
-    $match: {
-      reviewID: mongodb.ObjectId.createFromHexString(id),
-      helpful: true
-    }
-  },
-  {
-    $count: 'helpful'
-  }])
-  if(val[0])
-  return val[0].helpful
-  else
-  return 0
+async function gethelpful(id) {
+  var val = await reviewsratings.aggregate([
+    {
+      $match: {
+        reviewID: mongodb.ObjectId.createFromHexString(id),
+        helpful: true,
+      },
+    },
+    {
+      $count: "helpful",
+    },
+  ]);
+  if (val[0]) return val[0].helpful;
+  else return 0;
 }
 
-async function getunhelpful(id){
-  var val = await reviewsratings.aggregate([{
-    $match: {
-      reviewID: mongodb.ObjectId.createFromHexString(id),
-      unhelpful: true
-    }
-  },
-  {
-    $count: 'unhelpful'
-  }])
-  if(val[0])
-  return val[0].unhelpful
-  else
-  return 0
+async function getunhelpful(id) {
+  var val = await reviewsratings.aggregate([
+    {
+      $match: {
+        reviewID: mongodb.ObjectId.createFromHexString(id),
+        unhelpful: true,
+      },
+    },
+    {
+      $count: "unhelpful",
+    },
+  ]);
+  if (val[0]) return val[0].unhelpful;
+  else return 0;
 }
 
-async function getfeaturedreviews(restaurant){
-    var val = await reviews.aggregate([{
-      $match:{
+async function getfeaturedreviews(restaurant) {
+  var val = await reviews.aggregate([
+    {
+      $match: {
         restaurantID: restaurant._id,
         rating: {
-          $gte: 4
-        }
-      }
-    }])
-    var rand = parseInt(Math.floor(Math.random() * val.length))
-    return val[rand].review
-}
-async function getrestoreviews(id){
-  var val = await reviews.aggregate([{
-
-    $match:{
-      restaurantID: mongodb.ObjectId.createFromHexString(id),
-    },
-  }]).lookup(    {
-    from: 'users',
-    localField: 'reviewerID',
-    foreignField: '_id',
-    as: 'user'
-  })
-  return val
-}
-
-async function getuserreviews(id){
-  var val
-  try{
-    val = await reviews.aggregate([{
-      $match:{
-        reviewerID: mongodb.ObjectId.createFromHexString(id),
+          $gte: 4,
+        },
       },
-    }]).lookup(    {
-      from: 'restaurants',
-      localField: 'restaurantID',
-      foreignField: '_id',
-      as: 'restaurant'
-    })
-  }catch(error){
-    val = "ERROR404"
-  }
-  return val
+    },
+  ]);
+  var rand = parseInt(Math.floor(Math.random() * val.length));
+  return val[rand].review;
+}
+async function getrestoreviews(id) {
+  var val = await reviews
+    .aggregate([
+      {
+        $match: {
+          restaurantID: mongodb.ObjectId.createFromHexString(id),
+        },
+      },
+    ])
+    .lookup({
+      from: "users",
+      localField: "reviewerID",
+      foreignField: "_id",
+      as: "user",
+    });
+  return val;
 }
 
-//post userdata for login
-app.post('/home/login', async function (req, res) {
-  var val = await getusers()
-  console.log("true")
-  res.send(val)
+async function getuserreviews(id) {
+  var val;
+  try {
+    val = await reviews
+      .aggregate([
+        {
+          $match: {
+            reviewerID: mongodb.ObjectId.createFromHexString(id),
+          },
+        },
+      ])
+      .lookup({
+        from: "restaurants",
+        localField: "restaurantID",
+        foreignField: "_id",
+        as: "restaurant",
+      });
+  } catch (error) {
+    val = "ERROR404";
+  }
+  return val;
+}
+
+passport.use('local', new LocalStrategy(async(username, password, done) =>{
+  try{
+    users.findOne({ username: username }).then(async (user) => {
+      if (user) {
+        if(await user.comparePassword(password))
+{
+          found = true
+          return done(null, user);}
+      }else{
+        users.findOne({ email: username }).then(async(user2) => {
+          if (user2) {
+            if(await user2.comparePassword(password)){
+              return done(null, user2);
+            }
+            else{
+              return done(null, false);
+            }
+          }
+        });
+    }});
+      }
+      catch (err){
+        return done(null, false);
+  }
+}
+))
+
+passport.serializeUser((user, done)=>{
+  done(null, user._id);
+});
+passport.deserializeUser(async (id, done)=>{
+  users.findById(id, function (err, user) {
+    done(err, user);
+  });
+});
+
+app.post(
+  "/home/login",
+  function (req, res, next) {
+    passport.authenticate('local', async function(err, user, info) {
+    if(user)
+      res.send({success: true, _id: user._id, isOwner: user.isOwner})
+    else
+      res.send({success: false})
+  })(req, res, next);
+});
+
+app.post("/home/register/check", async function (req, res) {
+  var val = await getusers();
+  res.send(val);
 });
 
 const storageusers = multer.diskStorage({
-  destination: './public/users',
-  filename: function(req, file, cb) {
-    cb(null, `${file.originalname}`)
-  }
-})
+  destination: "./public/users",
+  filename: function (req, file, cb) {
+    cb(null, `${file.originalname}`);
+  },
+});
 
 const storagemedia = multer.diskStorage({
-  destination: './public/reviewmedia',
-  filename: function(req, file, cb) {
-    cb(null, `${file.originalname}`)
+  destination: "./public/reviewmedia",
+  filename: function (req, file, cb) {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const uploaduserimage = multer({ storage: storageusers });
+const uploadreviewimage = multer({ storage: storagemedia });
+
+app.post("/home/register", async function (req, res) {
+  newuser = new users();
+  newuser.firstName = req.body.firstName;
+  newuser.lastName = req.body.lastName;
+  newuser.email = req.body.email;
+  newuser.password = req.body.password;
+  newuser.username = req.body.username;
+  newuser.isOwner = false;
+  newuser.description = req.body.description;
+  newuser.save().then(function (result) {
+    res.send(String(result["_id"]));
+  });
+});
+
+app.post(
+  "/home/register/upload",
+  uploaduserimage.array("my-image-file"),
+  async function (req, res) {
+    id = JSON.parse(JSON.stringify(req.body)).id;
+    users.findById(id).then((document) => {
+      document.imageurl = "/users/".concat(req.files[0].originalname);
+      document.save();
+    });
+    res.send(req.body);
   }
-})
+);
 
-const uploaduserimage = multer({storage: storageusers})
-const uploadreviewimage = multer({storage: storagemedia})
-
-
-app.post('/home/register', async function (req, res) {
-  newuser = new users()
-  newuser.firstName = req.body.firstName
-  newuser.lastName = req.body.lastName
-  newuser.email = req.body.email
-  newuser.password = req.body.password
-  newuser.username = req.body.username
-  newuser.isOwner = false
-  newuser.description = req.body.description
-  newuser.save().then(function(result){
-    res.send(String(result['_id']))
-   })
+app.post("/review", async function (req, res) {
+  newreview = new reviews();
+  newreview.restaurantID = mongodb.ObjectId.createFromHexString(
+    req.body.restaurantid
+  );
+  newreview.reviewerID = mongodb.ObjectId.createFromHexString(req.body.userid);
+  newreview.review = req.body.review;
+  newreview.rating = req.body.rating;
+  newreview.helpful = 0;
+  newreview.unhelpful = 0;
+  newreview.ownerresponse = "";
+  newreview.save().then(async function (result) {
+    let rating = await getavgrating(req.body.restaurantid);
+    let numreviews = await getnumreviews(req.body.restaurantid);
+    restaurants
+      .findByIdAndUpdate(req.body.restaurantid, {
+        avgrating: rating,
+        numreviews: numreviews,
+      })
+      .then((response) => {
+        res.send(String(result["_id"]));
+      });
+  });
 });
 
-app.post('/home/register/upload', uploaduserimage.array("my-image-file"), async function (req, res) {
-  id = (JSON.parse(JSON.stringify(req.body))).id
-  users.findById(id).then((document) =>{
-    document.imageurl = "/users/".concat(req.files[0].originalname)
-    document.save()
-  })
-  res.send(req.body)
-});
+app.post(
+  "/review/upload",
+  uploadreviewimage.array("my-image-file"),
+  async function (req, res) {
+    id = JSON.parse(JSON.stringify(req.body)).id;
+    reviews.findById(id).then((document) => {
+      document.imageurl = "/reviewmedia/".concat(req.files[0].originalname);
+      document.save();
+    });
+    res.send(req.body);
+  }
+);
 
-app.post('/review', async function (req, res) {
-  newreview = new reviews()
-  newreview.restaurantID = mongodb.ObjectId.createFromHexString(req.body.restaurantid)
-  newreview.reviewerID = mongodb.ObjectId.createFromHexString(req.body.userid)
-  newreview.review = req.body.review
-  newreview.rating = req.body.rating
-  newreview.helpful = 0
-  newreview.unhelpful = 0
-  newreview.ownerresponse = ""
-  newreview.save().then(async function(result){
-    let rating = await getavgrating(req.body.restaurantid)
-    let numreviews = await getnumreviews(req.body.restaurantid)
-    restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
-      res.send(String(result['_id']))
-    })
-   })
-});
-
-app.post('/review/upload', uploadreviewimage.array("my-image-file"), async function (req, res) {
-  id = (JSON.parse(JSON.stringify(req.body))).id
-  reviews.findById(id).then((document) =>{
-    document.imageurl = "/reviewmedia/".concat(req.files[0].originalname)
-    document.save()
-  })
-  res.send(req.body)
-});
-
-app.post('/user/:id/editprofile', async function (req, res){
-  console.log(req.params.id)
-  users.findById(req.params.id).then((document) =>{
-    document.description = req.body.description
-    if(req.body.newimage){
-      fs.unlink("./public"+document.imageurl, (err) => err && console.error(err));
+app.post("/user/:id/editprofile", async function (req, res) {
+  users.findById(req.params.id).then((document) => {
+    document.description = req.body.description;
+    if (req.body.newimage) {
+      fs.unlink(
+        "./public" + document.imageurl,
+        (err) => err && console.error(err)
+      );
     }
-    document.save()
-    res.send(document)
-  })
-})
+    document.save();
+    res.send(document);
+  });
+});
 
-app.post('/user/:id/editprofile/upload', uploaduserimage.array("my-image-file"), async function (req, res){
-  console.log(req.params.id)
-  users.findById(req.params.id).then((document) =>{
-    document.imageurl = "/users/".concat(req.files[0].originalname)
-    document.save()
-    res.send(document)
-  })
-  
-})
+app.post("/user/:id/deleteprofile", async function (req, res) {
+  users.findByIdAndDelete(req.params.id).then(response =>
+    res.send(200)
+    )
+});
 
+app.post(
+  "/user/:id/editprofile/upload",
+  uploaduserimage.array("my-image-file"),
+  async function (req, res) {
+    users.findById(req.params.id).then((document) => {
+      document.imageurl = "/users/".concat(req.files[0].originalname);
+      document.save();
+      res.send(document);
+    });
+  }
+);
 
 //all restaurants data
-app.get('/restaurants', async function (req, res) {
-  var val = await getrestaurants()
-  res.send(val)
+app.get("/restaurants", async function (req, res) {
+  var val = await getrestaurants();
+  res.send(val);
 });
 
-
 //randomly select featured reviews data
-app.get('/restaurants/featured', async function (req, res) {
-  var val = await getrestaurants()
-  const reviews = await Promise.all(val.map(restaurants => getfeaturedreviews(restaurants)))
-  res.send(reviews)
+app.get("/restaurants/featured", async function (req, res) {
+  var val = await getrestaurants();
+  const reviews = await Promise.all(
+    val.map((restaurants) => getfeaturedreviews(restaurants))
+  );
+  res.send(reviews);
 });
 
 //per restaurant data
-app.get('/restaurants/:id', async function (req, res){
-  var val = await restaurants.findOne({_id: req.params.id}).
-  catch(err => res.send("ERROR 404"));
-  res.send(val)
+app.get("/restaurants/:id", async function (req, res) {
+  var val = await restaurants
+    .findOne({ _id: req.params.id })
+    .catch((err) => res.send("ERROR 404"));
+  res.send(val);
 });
 
 //per restaurant review
-app.get('/restaurants/:id/reviews', async function (req, res){
-  var val = await getrestoreviews(req.params.id)
-  res.send(val)
+app.get("/restaurants/:id/reviews", async function (req, res) {
+  var val = await getrestoreviews(req.params.id);
+  res.send(val);
 });
 
 //get all reviews data
-app.get('/reviews', async function (req, res) {
-  var val = await getreviews()
-  res.send(val)
+app.get("/reviews", async function (req, res) {
+  var val = await getreviews();
+  res.send(val);
 });
 
-app.post('/reviews/:id/edit', async function (req, res) {
-  console.log(req.body)
-  reviews.findById(req.params.id).then(async function(document){
-    document.review = req.body.review
-    document.rating = req.body.rating
-    document.edited = true
-    document.save().then(async function (response){
-      let rating = await getavgrating(req.body.restaurantid)
-      let numreviews = await getnumreviews(req.body.restaurantid)
-      restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
-        res.send(document)
-      })
-    })
-  })
+app.post("/reviews/:id/edit", async function (req, res) {
+  reviews.findById(req.params.id).then(async function (document) {
+    document.review = req.body.review;
+    document.rating = req.body.rating;
+    document.edited = true;
+    document.save().then(async function (response) {
+      let rating = await getavgrating(req.body.restaurantid);
+      let numreviews = await getnumreviews(req.body.restaurantid);
+      restaurants
+        .findByIdAndUpdate(req.body.restaurantid, {
+          avgrating: rating,
+          numreviews: numreviews,
+        })
+        .then((response) => {
+          res.send(document);
+        });
+    });
+  });
 });
 
-app.post('/reviews/:id/delete', async function (req, res) {
-  reviews.findByIdAndDelete(req.params.id).then(async function(response) {
-    let rating = await getavgrating(req.body.restaurantid)
-    let numreviews = await getnumreviews(req.body.restaurantid)
-    restaurants.findByIdAndUpdate(req.body.restaurantid, {avgrating: rating, numreviews: numreviews}).then(response => {
-      res.send("deleted")
-    })  })
+app.post("/reviews/:id/delete", async function (req, res) {
+  reviews.findByIdAndDelete(req.params.id).then(async function (response) {
+    let rating = await getavgrating(req.body.restaurantid);
+    let numreviews = await getnumreviews(req.body.restaurantid);
+    restaurants
+      .findByIdAndUpdate(req.body.restaurantid, {
+        avgrating: rating,
+        numreviews: numreviews,
+      })
+      .then((response) => {
+        res.send("deleted");
+      });
+  });
 });
 
-app.post('/reviews/:id/mark', async function (req,res){
-  let reviewID = mongodb.ObjectId.createFromHexString(req.params.id)
-  let userID = mongodb.ObjectId.createFromHexString(req.body.userid)
-  reviewsratings.exists({reviewID: reviewID, reviewerID: userID }).then(result => {
-    if(result){
-      reviewsratings.findById(result._id).then(response => {
-        if(response.helpful == req.body.mark){
-          reviewsratings.findByIdAndDelete(response._id).then(response2 => {
-            res.send('success')
-          })
-        }else{
-          reviewsratings.findByIdAndUpdate(response._id, {helpful: req.body.mark, unhelpful: !req.body.mark}).then(response2 => {
-            res.send('success')
-          })
-        }
-      })
-    }else{
-      var reviewmark = new reviewsratings()
-      reviewmark.reviewID = reviewID
-      reviewmark.reviewerID = userID
-      reviewmark.helpful = req.body.mark
-      reviewmark.unhelpful = !req.body.mark
-      reviewmark.save().then(response => {
-        res.send('success')
-      })  }
-  })
-}
-)
+app.post("/reviews/:id/mark", async function (req, res) {
+  let reviewID = mongodb.ObjectId.createFromHexString(req.params.id);
+  let userID = mongodb.ObjectId.createFromHexString(req.body.userid);
+  reviewsratings
+    .exists({ reviewID: reviewID, reviewerID: userID })
+    .then((result) => {
+      if (result) {
+        reviewsratings.findById(result._id).then((response) => {
+          if (response.helpful == req.body.mark) {
+            reviewsratings.findByIdAndDelete(response._id).then((response2) => {
+              res.send("success");
+            });
+          } else {
+            reviewsratings
+              .findByIdAndUpdate(response._id, {
+                helpful: req.body.mark,
+                unhelpful: !req.body.mark,
+              })
+              .then((response2) => {
+                res.send("success");
+              });
+          }
+        });
+      } else {
+        var reviewmark = new reviewsratings();
+        reviewmark.reviewID = reviewID;
+        reviewmark.reviewerID = userID;
+        reviewmark.helpful = req.body.mark;
+        reviewmark.unhelpful = !req.body.mark;
+        reviewmark.save().then((response) => {
+          res.send("success");
+        });
+      }
+    });
+});
 
-app.post('/marks/:id', async function (req,res){
-  let val1 = await gethelpful(req.params.id)
-  let val2 = await getunhelpful(req.params.id)
-   console.log(val1)
-   console.log(val2)
-   reviews.findById(req.params.id).then(response => {
-    if(response){
-      response.helpful = val1
-      response.unhelpful = val2
-      response.save().then(next => {
-        res.send({helpful: val1, unhelpful: val2})
-      })
+app.post("/marks/:id", async function (req, res) {
+  let val1 = await gethelpful(req.params.id);
+  let val2 = await getunhelpful(req.params.id);
+  reviews.findById(req.params.id).then((response) => {
+    if (response) {
+      response.helpful = val1;
+      response.unhelpful = val2;
+      response.save().then((next) => {
+        res.send({ helpful: val1, unhelpful: val2 });
+      });
+    } else {
+      res.send({ helpful: val1, unhelpful: val2 });
     }
-    else{
-      res.send({helpful: val1, unhelpful: val2})
-    }
-   })
-})
+  });
+});
 //user data
-app.get('/user/:id', async function (req, res){
-  var val = await users.findOne({_id: req.params.id}).
-  catch(err => res.send("ERROR 404"));
-  res.send(val)
+app.get("/user/:id", async function (req, res) {
+  var val = await users
+    .findOne({ _id: req.params.id })
+    .catch((err) => res.send("ERROR 404"));
+  res.send(val);
 });
 
-app.get('/user/:id/reviews', async function (req, res){
-  var val = await getuserreviews(req.params.id)
-  res.send(val)
+app.get("/user/:id/reviews", async function (req, res) {
+  var val = await getuserreviews(req.params.id);
+  res.send(val);
 });
-

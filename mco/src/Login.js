@@ -54,14 +54,15 @@ function BoxSx() {
   const [valid, setValid] = useState(1);
   const loguser = () => {
     
-    axios.post('http://localhost:5000/home/login')
+    let data = {
+      username: emailRef.current.value,
+      password: passwordRef.current.value
+    }
+    axios.post('http://localhost:5000/home/login', data)
     .then(response => {
-      response.data.forEach(element => {
-        if(String(element.email) == emailRef.current.value || String(element.username) == emailRef.current.value && String(element.password) == passwordRef.current.value)
-          navigate('/home/main', { state: { userid: element._id, isOwner: element.isOwner, currlocation: "home" } })
-      });
-        }, error => {
-      console.log(error);
+      if(response.data.success){
+        navigate('/home/main', { state: { userid: response.data._id, isOwner: response.data.isOwner, currlocation: "home" } })
+      }
     });
     setValid(0);
   };
@@ -83,10 +84,10 @@ function BoxSx() {
         <div class="register2">
           <Typography variant='h3' color="primary.dark" fontFamily="Roboto" fontWeight="100">Login Account</Typography>
         <span class="registerinput1">      
-          <ThemeTextField error={valid==0 } onClick={typevalid} inputRef={emailRef} id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch',  input: { color: 'primary.dark' } }}/>
+          <ThemeTextField error={valid==0 } onChange={typevalid} onClick={typevalid} inputRef={emailRef} id="email" size="small" label="Email/Username" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch',  input: { color: 'primary.dark' } }}/>
         </span>
         <span class="registerinput2">      
-          <ThemeTextField error={valid==0} onClick={typevalid} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
+          <ThemeTextField error={valid==0} onChange={typevalid} onClick={typevalid} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
         <FormControlLabel control={<Checkbox defaultChecked color="secondary"/>} label="Remember me?" />
         </span>
         <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} onClick={loguser}>

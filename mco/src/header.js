@@ -14,7 +14,7 @@ import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
 import logo from './images/logo.png';
 import { useNavigate } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 function HideOnScroll(props) {
@@ -99,14 +99,19 @@ export default function Header() {
   var id = "nouser"
   var isOwner = false
   var currlocation = "main"
+  var [searchParams, setSearchParams] = useState("")
+
   if(location.state){
     id = location.state.userid
     isOwner = location.state.isOwner
     currlocation = location.state.currlocation
   }
+
+  const handlesearch = (event) => {
+    setSearchParams(event.target.value.toLowerCase().trim())
+  }
   return (
     <Box sx={{ flexGrow: 1}} >
-      <HideOnScroll>
       <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none'}}>
         <Toolbar >
         <Box
@@ -124,6 +129,15 @@ export default function Header() {
             <StyledInputBase
               placeholder="Search Restaurants         |         Cuisine         |         Food"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={handlesearch}
+              onKeyUp={(event) => {
+                if (event.key === "Enter" && searchParams != "") {
+                  navigate("/home/main?search=".concat(searchParams),{ state: { userid: id, isOwner: isOwner, currlocation: "home"}})
+                }
+                if (event.key === "Enter" && searchParams == "") {
+                  navigate("/home/main", { state: { userid: id, isOwner: isOwner, currlocation: "home"}})
+              }
+            }}              
             />
           </Search>
           <span class="buttongroup2">
@@ -153,7 +167,6 @@ export default function Header() {
           </span>
         </Toolbar>
       </AppBar>
-      </HideOnScroll>
     </Box>
   );
 }

@@ -100,7 +100,7 @@ function BoxSx() {
   const formvalidation = () => {
     var inc = false
     var usernamefound = false
-    axios.post('http://localhost:5000/home/login')
+    axios.post('http://localhost:5000/home/register/check')
     .then(response => {
       response.data.forEach(element => {
         if(String(element.username) == usernameRef.current.value || String(element.email) == emailRef.current.value){

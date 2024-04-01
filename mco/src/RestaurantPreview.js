@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import './css/RestaurantPreview.css';
 import Divider from '@mui/material/Divider';
 import Rating from '@mui/material/Rating';
@@ -104,30 +104,16 @@ export function ReviewBox(Details, Title = "Featured Review", Edited = false, Re
     )
 }
 
-function Filter() {
-  return (
-    <FormControl>
-      <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
-        name="row-radio-buttons-group"
-        defaultValue="0+"
-              >
-                  
-        <FormControlLabel value="4+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"4+ Stars"} </Typography>} labelPlacement="start"/>
-        <FormControlLabel value="3+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"3+ Stars"} </Typography>} labelPlacement="start"/>
-        <FormControlLabel value="2+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"2+ Stars"} </Typography>} labelPlacement="start"/>
-        <FormControlLabel value="1+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"1+ Star"} </Typography>} labelPlacement="start"/>
-        <FormControlLabel value="0+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"0+ Star"} </Typography>} labelPlacement="start"/>
-      </RadioGroup>
-    </FormControl>
-  );
-}
-
 //function to hold cover the props for navigation and location, data storage
 export function Body() {
   let navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  let filter = searchParams.get("search")
+  let query = ""
+  if(filter){
+    query = filter
+  }
   var id = "nouser"
   var isOwner = false
   if(location.state){
@@ -136,7 +122,7 @@ export function Body() {
   }
 
   return <Preview        
-        router={{ location, navigate, id, isOwner}}
+        router={{ location, navigate, id, isOwner, query}}
       />
 }
 
@@ -146,9 +132,31 @@ export class Preview extends React.Component {
     super(props);
     this.state = {
       restaurantslist: [],
-      reviewslist: []
+      reviewslist: [],
+      searchParams: "",
+      filter: 0
     };
     }
+    Filter() {
+      return (
+        <FormControl>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            defaultValue="0+"
+                  >
+                      
+            <FormControlLabel onClick={()=> this.setState({filter: 4 })} value="4+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"4+ Stars"} </Typography>} labelPlacement="start"/>
+            <FormControlLabel onClick={()=> this.setState({filter: 3 })} value="3+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"3+ Stars"} </Typography>} labelPlacement="start"/>
+            <FormControlLabel onClick={()=> this.setState({filter: 2 })} value="2+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"2+ Stars"} </Typography>} labelPlacement="start"/>
+            <FormControlLabel onClick={()=> this.setState({filter: 1 })} value="1+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"1+ Star"} </Typography>} labelPlacement="start"/>
+            <FormControlLabel onClick={()=> this.setState({filter: 0 })}value="0+" control={<Radio color="secondary"/>} label={<Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline"> {"0+ Star"} </Typography>} labelPlacement="start"/>
+          </RadioGroup>
+        </FormControl>
+      );
+    }
+
     componentDidMount() {
       axios.get("http://localhost:5000/restaurants").then(response => 
       {
@@ -194,11 +202,11 @@ export class Preview extends React.Component {
     }}>
   <Typography variant="subtitle2" fontFamily="Roboto" fontWeight="300" display="inline">Filter Restaurants By Rating
       </Typography>
-      <Filter/>
+      {this.Filter()}
     </Box>
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
-        <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>
+      (item.restaurantName.toLowerCase().includes(this.props.router.query) ||  item.location.toLowerCase().includes(this.props.router.query)) && (item.avgrating >= this.state.filter) && <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>
       <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
         {item.restaurantName}
       </Typography>
