@@ -1,0 +1,67 @@
+[{
+  "_id": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "restaurantName": "Jollibee",
+  "location": "2284 Taft Avenue, Manila City",
+  "description": "Jollibee is the largest fast food chain brand in the Philippines, operating a network of more than 1,500 stores in 17 countries. A dominant market leader in the Philippines, Jollibee enjoys the lion’s share of the local market that is more than all the other multinational fast food brands in PH combined. ",
+  "landmarks": "Beside Manila Residences II",
+  "owner": {
+    "$oid": "65e94a25394e41e585c89a63"
+  },
+  "avgrating": 4.8,
+  "numreviews": 5,
+  "mapImage": "/restaurantmaps/65e92d3b0f8a60ebf606981d_map.png"
+},
+{
+  "_id": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "restaurantName": "McDonalds",
+  "location": "2399 Taft Avenue, Manila City",
+  "description": "McDonald's Corporation (McDonald's) is one of the world's largest and most recognized fast-food chains, known for its hamburgers, french fries, and name-brand sandwiches such as the Big Mac, Quarter Pounder, and Egg McMuffin, as well as the child-focused Happy Meal. The American fast-food restaurant chain McDonald's was founded in 1940 and has since grown to the world's largest restaurant chain by revenue.",
+  "landmarks": "Beside Gate 1 of DLSU",
+  "owner": "",
+  "avgrating": 4.6,
+  "numreviews": 5,
+  "mapImage": "/restaurantmaps/65e92d570f8a60ebf606981f_map.png"
+},
+{
+  "_id": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "restaurantName": "KFC",
+  "location": "University Mall, 2507 Taft Avenue, Manila City",
+  "description": "KFC is a global chicken restaurant brand with a rich, decades-long history of success and innovation. It all started with one cook, Colonel Harland Sanders, who created a finger lickin' good recipe more than 75 years ago—a list of 11 secret herbs and spices scratched out on the back of his kitchen door.",
+  "landmarks": "Beside UMall Entrance",
+  "owner": "",
+  "avgrating": 4.4,
+  "numreviews": 5,
+  "mapImage": "/restaurantmaps/65e92d6a0f8a60ebf6069821_map.png"
+},
+{
+  "_id": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "restaurantName": "Bonchon",
+  "location": "University Mall, 2057 Taft Avenue, Manila City",
+  "description": "This globally renowned brand is famous for its signature Korean fried chicken, irresistibly glazed with secret sauces. With each bite, BonChon allows people to savor the authentic taste of Korea, creating an experience that bridges cultures.",
+  "landmarks": "Inside UMall",
+  "owner": "",
+  "avgrating": 4.6,
+  "numreviews": 5,
+  "mapImage": "/restaurantmaps/65e92d750f8a60ebf6069823_map.png"
+},
+{
+  "_id": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "restaurantName": "24Chicken",
+  "location": "EGI Tower, 2339 Taft Avenue, Manila City",
+  "description": "24 Chicken’s Korean style best-selling flavors – Yangnyeom with Garlic, Jack Daniels, and Snow Cheese will surely beat your cravings right away.  For all these, the food establishment prides itself on using ingredients that are sourced from Korea and parts of Asia in order to create its signature sauces.",
+  "landmarks": "Inside EGI Tower",
+  "owner": "",
+  "avgrating": 4.6,
+  "numreviews": 5,
+  "mapImage": "/restaurantmaps/65e92d7f0f8a60ebf6069825_map.png"
+}]

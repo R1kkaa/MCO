@@ -1,0 +1,91 @@
+[{
+  "_id": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "firstName": "Jeka",
+  "lastName": "Cataluna",
+  "email": "_jekacakes@gmail.com",
+  "password": "$2b$10$HRJ42FSOEWvHDq0kfL834OI7ygZ3Bh/zERO88KCnn2UdcOVybPXrO",
+  "username": "@_jekacakes",
+  "isOwner": false,
+  "imageurl": "/users/65e863b106157293cdb76b8e_avatar.png",
+  "description": "I'm a 2nd year CCS student from DLSU who loves to explore food chains and helping out those who want to find good and cheap food in taft! Want a foodie buddy? Feel free to hit me up! I know a lot of good places!"
+},
+{
+  "_id": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "firstName": "Angelo",
+  "lastName": "Geronimo",
+  "email": "RikkaFoods@gmail.com",
+  "password": "$2b$10$X0WHSlnTnMpu0rIXxHm5WOv.MTf6TNAxLyAAIlN0IbJzrrfK71s7G",
+  "username": "@RikkaFoods",
+  "isOwner": false,
+  "description": "As someone who loves trying out new dishes, I'm so glad that there are new places in taft avenue that are popping off! I like going beyond fast food restaurants and highlighting those independent businesses so they can thrive as well!",
+  "imageurl": "/users/65e8798e0294559b260794cd_avatar.png"
+},
+{
+  "_id": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "firstName": "Princess Hermione",
+  "lastName": "Marucot",
+  "email": "Zachiebear@gmail.com",
+  "password": "$2b$10$D9As3swYbJ8/dsssEL3J1OmJjK85GmA.5JUbNVSU8a8v2551un9LG",
+  "username": "@Zachiebear",
+  "isOwner": false,
+  "description": "I love sweets and desserts! Current obsession: fast food desserts! I'm here to find places to help you find a way to sate your sweet tooth's cravings!",
+  "imageurl": "/users/65e879ef0294559b260794d0_avatar.png"
+},
+{
+  "_id": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "firstName": "Mike",
+  "lastName": "Hawk",
+  "email": "TheHawkMan@gmail.com",
+  "password": "$2b$10$p1wgZOjrTGYK.HQHvAABveb87XJY6Nk3b6AlAcEdWukUA4w0Pl03O",
+  "username": "@TheHawkMan",
+  "isOwner": false,
+  "description": "I'm obsessed with finding the best fried chicken in Taft Avenue! I'm so glad I have a variety of choices to choose from, it's like fried chicken heaven! Personal favorite flavor is 24 Chicken's JD!",
+  "imageurl": "/users/65e87a190294559b260794d2_avatar.png"
+},
+{
+  "_id": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "firstName": "Sai",
+  "lastName": "Kabiling",
+  "email": "KaelleEats@gmail.com",
+  "password": "$2b$10$lHwW3gP8NZy8E44.mAth5exzgBcfSHbJRN8dTmtkO59U/gQ7/f94a",
+  "username": "@KaelleEats",
+  "isOwner": false,
+  "description": "I absolutely adore Filipino cuisine, and I'm so glad that there are those that try to amp up these dishes and make them fancier! I'm here to uplift and find restaurants that are trying to improve the already perfect Filipino Cuisine!",
+  "imageurl": "/users/65e87a8f0294559b260794d5_avatar.png"
+},
+{
+  "_id": {
+    "$oid": "65e94a25394e41e585c89a63"
+  },
+  "firstName": "Anthony",
+  "lastName": "Reyes",
+  "email": "JollibeeTaftOwner@gmail.com",
+  "password": "$2b$10$QTk7dkrHw9b2dFG3lcPYi.OCVcpL11.zEi6XMaodc1APjKFk3ktA.",
+  "username": "Jollibee_Owner",
+  "isOwner": true,
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "66092125ad8973e9cba1378b"
+  },
+  "firstName": "Sebastian",
+  "lastName": "Chua Cham",
+  "email": "bascham@gmail.com",
+  "password": "$2b$10$CRrK8LhL3VzEjKIrcnt/aughJ3aMtLHFkQiyMzXShVvtmMtk3gzsSbascham",
+  "username": "@vas_deferens",
+  "isOwner": false,
+  "description": "IS UR DAD A BAKER CUZ U GOT SOME NICE BUNS W/ SHOWER RIZZ\n",
+  "__v": 0,
+  "imageurl": "/users/66092125ad8973e9cba1378b_avatar.jpeg"
+}]

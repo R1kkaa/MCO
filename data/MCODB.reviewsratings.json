@@ -1,0 +1,168 @@
+[{
+  "_id": {
+    "$oid": "6609869ae85eec1e1b1d8f60"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069832"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "helpful": false,
+  "unhelpful": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660986c1143f311505c48909"
+  },
+  "reviewID": {
+    "$oid": "6609248753ddb253224a263f"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6609870ca9c6f08e7b53b7bf"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069831"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6609870ea9c6f08e7b53b7cd"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069830"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6609884aa9c6f08e7b53b82a"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf606982f"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66098a62a9c6f08e7b53b83c"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069831"
+  },
+  "reviewerID": {
+    "$oid": "66092125ad8973e9cba1378b"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66098a64a9c6f08e7b53b851"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069832"
+  },
+  "reviewerID": {
+    "$oid": "66092125ad8973e9cba1378b"
+  },
+  "helpful": false,
+  "unhelpful": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660ab2d7c3a759d2ab44e5e3"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069832"
+  },
+  "reviewerID": {
+    "$oid": "660ab21ffcba94e5276fd062"
+  },
+  "helpful": false,
+  "unhelpful": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660ab2d9c3a759d2ab44e5f1"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069831"
+  },
+  "reviewerID": {
+    "$oid": "660ab21ffcba94e5276fd062"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660ab2dac3a759d2ab44e5f8"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf6069830"
+  },
+  "reviewerID": {
+    "$oid": "660ab21ffcba94e5276fd062"
+  },
+  "helpful": true,
+  "unhelpful": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660ab2dbc3a759d2ab44e5ff"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf606982f"
+  },
+  "reviewerID": {
+    "$oid": "660ab21ffcba94e5276fd062"
+  },
+  "helpful": false,
+  "unhelpful": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660ab2ddc3a759d2ab44e60d"
+  },
+  "reviewID": {
+    "$oid": "65e9369a0f8a60ebf606982e"
+  },
+  "reviewerID": {
+    "$oid": "660ab21ffcba94e5276fd062"
+  },
+  "helpful": false,
+  "unhelpful": true,
+  "__v": 0
+}]

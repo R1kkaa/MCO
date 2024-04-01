@@ -1,0 +1,401 @@
+[{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606982e"
+  },
+  "restaurantID": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "review": "Crispylicious and Juicilicious! Lives up to its name. \n\nEdit: Came back again and it tasted really good!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 1,
+  "ownerresponse": "Thank You!",
+  "edited": true
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606982f"
+  },
+  "restaurantID": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "reviewerID": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "review": "Has long lines during peak hours, but the chicken here is always fresh!",
+  "rating": 4,
+  "helpful": 1,
+  "unhelpful": 1,
+  "ownerresponse": "Acknowledged!"
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069830"
+  },
+  "restaurantID": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "reviewerID": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "review": "I really love Jolly Spaghetti! This branch makes it best!",
+  "rating": 5,
+  "helpful": 2,
+  "unhelpful": 0,
+  "ownerresponse": "Thank You!"
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069831"
+  },
+  "restaurantID": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "reviewerID": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "review": "Peach Mango Pie FTW! I also love the new choco float",
+  "rating": 5,
+  "helpful": 3,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069832"
+  },
+  "restaurantID": {
+    "$oid": "65e92d3b0f8a60ebf606981d"
+  },
+  "reviewerID": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "review": "The new mix and match is a life saver for students who want to save money!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 3,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069833"
+  },
+  "restaurantID": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "review": "Very generous with fries! Always served hot and crispy.",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069834"
+  },
+  "restaurantID": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "reviewerID": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "review": "I love the new McWings! The spice is just right !",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069835"
+  },
+  "restaurantID": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "reviewerID": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "review": "They bragged about bigger sizes and I got what they marketed!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069836"
+  },
+  "restaurantID": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "reviewerID": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "review": "You’ll get what you usually get in a regular McDo, it’s enough to stop the hunger.",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069837"
+  },
+  "restaurantID": {
+    "$oid": "65e92d570f8a60ebf606981f"
+  },
+  "reviewerID": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "review": "I had a birthday party here the other day, they were pretty accommodating!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069838"
+  },
+  "restaurantID": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "review": "Pretty quiet branch, I go here when I want to eat and enjoy chicken in peace.",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069839"
+  },
+  "restaurantID": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "reviewerID": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "review": "I love the gravy machine! My comfort food is rice and gravy, yum",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983a"
+  },
+  "restaurantID": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "reviewerID": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "review": "The serving time’s not as bad as the other branches, I get my order in less than 10 minutes!",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983b"
+  },
+  "restaurantID": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "reviewerID": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "review": "The menu is completely different from the ones I’m used to abroad, but I love how they turned it Filipino Friendly!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983c"
+  },
+  "restaurantID": {
+    "$oid": "65e92d6a0f8a60ebf6069821"
+  },
+  "reviewerID": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "review": "The combo meals are amazing! I especially like the mushroom soup paired with mashed potatoes 4/5!",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983d"
+  },
+  "restaurantID": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "reviewerID": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "review": "I absolutely adore the new flavors! Bingsu is great too!",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983e"
+  },
+  "restaurantID": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "review": "Great flavor on the chicken skin, and juicy meat on the inside!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf606983f"
+  },
+  "restaurantID": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "reviewerID": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "review": "I love how comfy the seats are and how the staff serve you the food! Very different from your typical fast food where you have to be the one to pick it up! Great Service!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069840"
+  },
+  "restaurantID": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "reviewerID": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "review": "Their Bibimbowls are amazing! I also love their iced tea blend!",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069841"
+  },
+  "restaurantID": {
+    "$oid": "65e92d750f8a60ebf6069823"
+  },
+  "reviewerID": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "review": "I tried their chicken sandwiches the other day, surprisingly, they were great!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069842"
+  },
+  "restaurantID": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "reviewerID": {
+    "$oid": "65e863b106157293cdb76b8e"
+  },
+  "review": "I like Bok’s better but their JD flavor really doesnt disappoint",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069843"
+  },
+  "restaurantID": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "reviewerID": {
+    "$oid": "65e8798e0294559b260794cd"
+  },
+  "review": "Try their snow cheese, it’s so damn good!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069844"
+  },
+  "restaurantID": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "reviewerID": {
+    "$oid": "65e879ef0294559b260794d0"
+  },
+  "review": "The queue time is a bit long, but it’s worth it!",
+  "rating": 4,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069845"
+  },
+  "restaurantID": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "reviewerID": {
+    "$oid": "65e87a190294559b260794d2"
+  },
+  "review": "Pretty good for its price, very student friendly and large portions!",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+},
+{
+  "_id": {
+    "$oid": "65e9369a0f8a60ebf6069846"
+  },
+  "restaurantID": {
+    "$oid": "65e92d7f0f8a60ebf6069825"
+  },
+  "reviewerID": {
+    "$oid": "65e87a8f0294559b260794d5"
+  },
+  "review": "Not only do their flavors have great taste, they also have great music taste",
+  "rating": 5,
+  "helpful": 0,
+  "unhelpful": 0,
+  "ownerresponse": ""
+}]
