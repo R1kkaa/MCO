@@ -51,20 +51,25 @@ function BoxSx() {
   const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const [remember, setRemember] = useState(true)
   const [valid, setValid] = useState(1);
   const loguser = () => {
     
     let data = {
       username: emailRef.current.value,
-      password: passwordRef.current.value
+      password: passwordRef.current.value,
+      remember: remember
+
     }
     axios.post('http://localhost:5000/home/login', data)
     .then(response => {
       if(response.data.success){
+        console.log(response.data)
         navigate('/home/main', { state: { userid: response.data._id, isOwner: response.data.isOwner, currlocation: "home" } })
       }
+    }).catch(function (error) {
+      setValid(0);
     });
-    setValid(0);
   };
   const typevalid = () => {
     setValid(1)
@@ -88,7 +93,7 @@ function BoxSx() {
         </span>
         <span class="registerinput2">      
           <ThemeTextField error={valid==0} onChange={typevalid} onClick={typevalid} inputRef={passwordRef} type="password" id="password" size="small" label="Password" variant="filled" color="secondary" sx={{opacity: 1, width: '55ch'}}/>
-        <FormControlLabel control={<Checkbox defaultChecked color="secondary"/>} label="Remember me?" />
+        <FormControlLabel control={<Checkbox defaultChecked color="secondary"/>} onChange={()=>setRemember(remember ? false : true)} label="Remember me?" />
         </span>
         <RegisterButton variant="outlined" color="secondary" size="large" style={{boxShadow: '1px 1px 1px #000000'}} onClick={loguser}>
             Login</RegisterButton>

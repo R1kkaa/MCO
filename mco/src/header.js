@@ -14,9 +14,9 @@ import {Theme} from'./themes';
 import { ThemeProvider } from '@mui/material/styles';
 import logo from './images/logo.png';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-
+import  axios  from 'axios';
 function HideOnScroll(props) {
   const { children, window } = props;
   const trigger = useScrollTrigger({
@@ -28,15 +28,6 @@ function HideOnScroll(props) {
     </Slide>
   );
 }
-
-HideOnScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -93,23 +84,37 @@ export const HeaderButton = styled(Button)(({ theme }) => ({
   
 }));
 
-export default function Header() {
+export default function Header(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  var id = "nouser"
-  var isOwner = false
-  var currlocation = "main"
+  var [id, setID] = useState("nouser")
+  var [isOwner, setOwner] = useState("false")
+  var currlocation = props.location
   var [searchParams, setSearchParams] = useState("")
-
-  if(location.state){
-    id = location.state.userid
-    isOwner = location.state.isOwner
-    currlocation = location.state.currlocation
-  }
-
   const handlesearch = (event) => {
     setSearchParams(event.target.value.toLowerCase().trim())
   }
+  const signout = () => {
+    axios.post("http://localhost:5000/signout").then(response =>
+    navigate("/home/login"))
+  }
+
+
+  useEffect(() => {
+    const check = async () => {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+            setID(response.data.user._id)
+            setOwner(response.data.user.isOwner)
+        }else{
+            setID("nouser")
+            setOwner(false)
+        }
+      })
+    }
+    check()}, 
+  );
+
   return (
     <Box sx={{ flexGrow: 1}} >
       <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none'}}>
@@ -160,7 +165,7 @@ export default function Header() {
           Profile </HeaderButton>
           }
           {id != "nouser" &&
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
+          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>signout()}>
           Sign Out</HeaderButton>
           }
           </ThemeProvider>

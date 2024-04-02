@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { restaurantreviews } from './util';
 import {restaurants as restaurantnames} from './util';
 import axios from 'axios';
+
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
@@ -172,6 +173,8 @@ class BoxSx extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: "nouser",
+      isOwner: false,
       firstname: "",
       lastname: "",
       username: "",
@@ -182,11 +185,11 @@ class BoxSx extends React.Component {
     };
     }
     delete(){
-      axios.post("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/deleteprofile"))
+      axios.post("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/deleteprofile"), {withCredentials: true})
       this.props.router.navigate("/home/login")
     }
     componentDidMount() {
-      axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser)).then(response => 
+      axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser), {withCredentials: true}).then(response => 
       {
         this.setState({
           firstname: response.data.firstName,
@@ -206,6 +209,19 @@ class BoxSx extends React.Component {
           }, error => {
         console.log(error);
       });
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          this.setState({
+            id: response.data.user._id,
+            isOwner: response.data.user.isOwner
+          })
+        }else{
+          this.setState({
+            id: "nouser",
+            isOwner: false
+          })
+        }
+      })
     }
   render(){
       const {firstname, lastname, username, description, reviewslist, imagelocation} = this.state;
@@ -231,15 +247,15 @@ class BoxSx extends React.Component {
           objectFit: 'cover',
           }}
       />
-                          {this.props.router.id == this.props.router.viewuser && 
+                          {this.state.id == this.props.router.viewuser && 
 <span style={{display:'flex', flexDirection: 'column'}}>
-<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000',width:'150px', marginLeft: '1140px', marginTop: '-18%'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.props.router.id, viewuser : this.props.router.viewuser, description: description, imageurl: imagelocation}})}>Edit Profile</HeaderButton>      
+<HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000',width:'150px', marginLeft: '1140px', marginTop: '-18%'}} onClick={()=>this.props.router.navigate("/home/main/user/editprofile",{ state: { userid: this.state.id, viewuser : this.props.router.viewuser, description: description, imageurl: imagelocation}})}>Edit Profile</HeaderButton>      
 <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000',width:'150px', marginLeft: '1140px', marginTop: '0.5%'}} onClick={()=>this.delete()}>Delete Profile</HeaderButton>      
 </span>
 }
 
 
-{this.props.router.id != this.props.router.viewuser && 
+{this.state.id != this.props.router.viewuser && 
 <HeaderButton variant="outlined" disabled style={{boxShadow: '2px 3px 5px #000000', marginLeft: '1140px', marginTop: '-36%', opacity: '0%'}}></HeaderButton>      
 }
       <div class="mainboxdiv">

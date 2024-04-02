@@ -14,6 +14,7 @@ import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -100,7 +101,7 @@ function BoxSx() {
   const formvalidation = () => {
     var inc = false
     var usernamefound = false
-    axios.post('http://localhost:5000/home/register/check')
+    axios.post('http://localhost:5000/home/register/check', {withCredentials: true})
     .then(response => {
       response.data.forEach(element => {
         if(String(element.username) == usernameRef.current.value || String(element.email) == emailRef.current.value){
@@ -124,13 +125,13 @@ function BoxSx() {
             description: descriptionRef.current.value,
             username: usernameRef.current.value
           }
-          axios.post('http://localhost:5000/home/register', data).then(response => {
+          axios.post('http://localhost:5000/home/register', data, {withCredentials: true}).then(response => {
             const newimage = new FormData(); 
             const filename = String(response.data).concat("_review_media.")
             const type = selectedImage.type.split("image/")[1]
             newimage.append('my-image-file', selectedImage, filename+type)
             newimage.append('id', response.data)
-            axios.post('http://localhost:5000/home/register/upload', newimage).then(response2 => {
+            axios.post('http://localhost:5000/home/register/upload', newimage, {withCredentials: true}).then(response2 => {
               navigate("/home/login")
             })
           })
@@ -150,9 +151,16 @@ function BoxSx() {
        formData.append('my-image-file', e.target.files[0]);
        setImage(formData);
      }
-
+  const remember = () => {
+    axios.post("http://localhost:5000/rememberme").then(response => {
+      if(response.data.success){
+        navigate('/home/main', { state: { userid: response.data.user._id, isOwner: response.data.user.isOwner, currlocation: "home" } })
+      }
+    })
+  }
   return (
     <ThemeProvider theme={Theme}>
+      {remember()}
     <Box
         sx={{
           width: 500,

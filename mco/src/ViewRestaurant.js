@@ -27,6 +27,8 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { VisuallyHiddenInput } from './Register';
 import { useRef } from 'react';
+axios.defaults.withCredentials = true
+
 export const HeaderButton2 = styled(Button)(({ theme }) => ({
   color: '#454545',
   backgroundColor: Theme.palette.primary.light, 
@@ -173,7 +175,8 @@ export function Body() {
   if(location.state){
     id = location.state.userid
     isOwner = location.state.isOwner
-  }
+  }    
+
   return <View        
         router={{ location, navigate, id, isOwner, newreviewRef, editreviewRef}}
       />
@@ -183,6 +186,9 @@ export class View extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      restaurantid: window.location.href.split("/")[6],
+      id: "nouser",
+      isOwner: false,
       restaurants: [],
       reviewslist: [],
       expandedId: -1,
@@ -197,7 +203,7 @@ export class View extends React.Component {
     };
     }
     componentDidMount() {
-      axios.get("http://localhost:5000/restaurants/".concat(this.props.router.location.state.restaurantid)).then(response => 
+      axios.get("http://localhost:5000/restaurants/".concat(this.state.restaurantid)).then(response => 
       {
         this.setState({
           restaurants: response.data,
@@ -205,7 +211,7 @@ export class View extends React.Component {
           }, error => {
         console.log(error);
       });
-      axios.get("http://localhost:5000/restaurants/".concat(this.props.router.location.state.restaurantid).concat("/reviews")).then(response => 
+      axios.get("http://localhost:5000/restaurants/".concat(this.state.restaurantid).concat("/reviews")).then(response => 
       {
         this.setState({
           reviewslist: response.data.reverse(),
@@ -213,6 +219,19 @@ export class View extends React.Component {
           }, error => {
         console.log(error);
       });
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          this.setState({
+            id: response.data.user._id,
+            isOwner: response.data.user.isOwner
+          })
+        }else{
+          this.setState({
+            id: "nouser",
+            isOwner: false
+          })
+        }
+      })
     }
     
     getFileInfo = (e) => {
@@ -239,7 +258,7 @@ export class View extends React.Component {
       }else{
         let data = {
           userid: this.props.router.location.state.userid,
-          restaurantid: this.props.router.location.state.restaurantid,
+          restaurantid: this.state.restaurantid,
           review: this.state.currreview,
           rating: this.state.value,
         }
@@ -280,7 +299,7 @@ export class View extends React.Component {
         reviewid: this.state.reviewslist[reviewIndex]["_id"],
         review: this.state.editreview,
         rating: this.state.editvalue,
-        restaurantid:this.props.router.location.state.restaurantid
+        restaurantid:this.state.restaurantid
       }
       axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/edit"), review).then(response => {
         window.location.reload()
@@ -288,7 +307,7 @@ export class View extends React.Component {
     }
     submitdelete = (reviewIndex) => {
       let data = {
-        restaurantid:this.props.router.location.state.restaurantid
+        restaurantid:this.state.restaurantid
       }
       axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/delete"), data).then(response => {
         window.location.reload()
@@ -296,10 +315,11 @@ export class View extends React.Component {
     }
     handlehelpful(reviewIndex, mark){
       let data = {
-        userid: this.props.router.id,
+        userid: this.state.id,
         mark: mark
       }
-      axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]._id).concat("/mark"), data).then(response => {
+      if(!this.state.isOwner)
+{      axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]._id).concat("/mark"), data).then(response => {
         axios.post("http://localhost:5000/marks/".concat(this.state.reviewslist[reviewIndex]._id)).then(res => {
           let reviewslist = this.state.reviewslist
           reviewslist[reviewIndex].helpful = res.data.helpful
@@ -308,7 +328,7 @@ export class View extends React.Component {
             reviewslist: reviewslist
           })
         })
-      })
+      })}
     }
     render(){
       const {restaurants, reviewslist, expandedId, value, editvalue, image, selectedImage, imageUrl} = this.state;
@@ -345,7 +365,7 @@ export class View extends React.Component {
               </ContentCard>
             {
               //add new reviews
-              this.props.router.location.state.userid != "nouser" && !this.props.router.location.state.isOwner &&
+              this.state.id != "nouser" && !this.state.isOwner &&
               <div class="user-review">
               <div class = "user-comment">
               <Typography variant='h6' color="primary.dark" fontFamily="Roboto" fontWeight="200"><div>Write a Review:</div></Typography>
@@ -386,7 +406,7 @@ export class View extends React.Component {
                     <UserIcon sx={{marginTop:"9px", marginLeft:"10px"}}>
                       {review.user[0].firstName && String(review.user[0].firstName).charAt(0).toUpperCase()}
                     </UserIcon>
-                    {review.user[0.].firstName && <Button variant="text" onClick={()=>this.props.router.navigate('/home/main/user/'.concat(review.user[0]._id), { state: { userid: this.props.router.id, viewuser : review.user[0]._id, currlocation: "profile", isOwner: this.props.router.isOwner}})} color="secondary">
+                    {review.user[0.].firstName && <Button variant="text" onClick={()=>this.props.router.navigate('/home/main/user/'.concat(review.user[0]._id), { state: { userid: this.state.id, viewuser : review.user[0]._id, currlocation: "profile", isOwner: this.state.isOwner}})} color="secondary">
                       <Typography  fontFamily="Roboto" variant="h6">{review.user[0].firstName.concat(" ").concat(review.user[0].lastName)}</Typography>
                       </Button>}
                       </div>
@@ -396,10 +416,10 @@ export class View extends React.Component {
                     </Box>
                     <ButtonGroup variant="outlined" aria-label="Basic button group">
                       {
-                          this.props.router.location.state.isOwner && this.props.router.location.state.userid !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.props.router.location.state.isOwner &&               
+                          this.state.isOwner && this.state.id !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.state.isOwner &&               
                            <Button color="secondary" variant="outlined" aria-label="Reply As Owner" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
                       }{
-                        this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
+                        this.state.id != "nouser" && this.state.id !=review.reviewerID && (
                               
                               /*mark helpful*/
                               <Button color="secondary" variant="outlined" aria-label="Helpful" onClick={()=>this.handlehelpful(reviewIndex, true)} endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
@@ -407,28 +427,28 @@ export class View extends React.Component {
                       }
                     {
                               /*mark unhelpful*/
-                        this.props.router.location.state.userid != "nouser" && this.props.router.location.state.userid !=review.reviewerID && (
+                              this.state.id != "nouser" && this.state.id !=review.reviewerID && (
                               <Button color="secondary" variant="outlined" aria-label="Unhelpful" onClick={()=>this.handlehelpful(reviewIndex, false)}startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
                               )
-                      }{ this.props.router.location.state.userid == review.reviewerID && (
+                      }{ this.state.id == review.reviewerID && (
                         <Button color="secondary" variant="outlined" aria-label="Edit" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Edit</Typography></Button>
                       )
-                      }{ this.props.router.location.state.userid == review.reviewerID && (
+                      }{ this.state.id == review.reviewerID && (
                         <Button color="secondary" variant="outlined" aria-label="Delete" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => this.submitdelete(reviewIndex)} >Delete</Typography></Button>
                       )
                       }{
-                        this.props.router.location.state.userid == "nouser" && (
+                        this.state.id == "nouser" && (
                             <Button color="secondary" href="/home/register" variant="outlined" aria-label="Helpful" endIcon={<ThumbUpIcon/>}><Typography variant="body" fontFamily="Roboto">{review.helpful} Helpful</Typography></Button>
                               )
                     }
                   {
-                      this.props.router.location.state.userid == "nouser" && (
+                      this.state.id == "nouser" && (
                             <Button color="secondary" href="/home/register" variant="outlined" aria-label="Reply" startIcon={<ThumbDownIcon/>}><Typography variant="body" fontFamily="Roboto">{review.unhelpful} Unhelpful</Typography></Button> 
                             )
                     }
                       </ButtonGroup>
                     {/*edit review*/}
-                      <Collapse in={this.state.expandedId === reviewIndex && !this.props.router.isOwner} timeout="auto" unmountOnExit>
+                      <Collapse in={this.state.expandedId === reviewIndex && !this.state.isOwner} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" onChange={this.editreview} size="small" variant="filled" defaultValue  = {review.review} sx={{width: '100%',margin:'10px'}}/>}
                       <div class = "review-buttons2">
@@ -438,7 +458,7 @@ export class View extends React.Component {
                         </Collapse>
 
                     {/*reply as owner*/}
-                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.props.router.isOwner && review.ownerresponse == ""} timeout="auto" unmountOnExit>
+                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.state.isOwner && review.ownerresponse == ""} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
                       {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
                       <HeaderButton2>Reply As Owner</HeaderButton2>

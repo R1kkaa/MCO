@@ -120,7 +120,6 @@ export function Body() {
     id = location.state.userid
     isOwner = location.state.isOwner
   }
-
   return <Preview        
         router={{ location, navigate, id, isOwner, query}}
       />
@@ -158,7 +157,7 @@ export class Preview extends React.Component {
     }
 
     componentDidMount() {
-      axios.get("http://localhost:5000/restaurants").then(response => 
+      axios.get("http://localhost:5000/restaurants", {withCredentials: true}).then(response => 
       {
         this.setState({
           restaurantslist: response.data,
@@ -166,7 +165,7 @@ export class Preview extends React.Component {
           }, error => {
         console.log(error);
       });
-      axios.get("http://localhost:5000/restaurants/featured").then(response => 
+      axios.get("http://localhost:5000/restaurants/featured", {withCredentials: true}).then(response => 
       {
         this.setState({
           reviewslist: response.data,

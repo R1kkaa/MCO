@@ -1,3 +1,6 @@
+//Do MVC
+//Deployment
+//Link Cookies to Sessions, Validation
 const express = require("express");
 const app = express();
 const port = 5000;
@@ -6,32 +9,43 @@ const mongodb = require("mongodb");
 const fs = require("fs");
 const cors = require("cors");
 const multer = require("multer");
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
 const { check, ValidationResult } = require("express-validator");
 const session = require("express-session");
-const store = new session.MemoryStore();
-(bcrypt = require("bcrypt"));
+const MongoStore = require('connect-mongo');
+const bcrypt = require("bcrypt");
 const passport = require("passport");
 var passportLocalMongoose = require("passport-local-mongoose");
 const LocalStrategy = require("passport-local").Strategy;
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  "Access-Control-Allow-Credentials": true
 
-app.use(
-  session({
-    secret: "some-secret",
-    cookie: { maxAge: 30000 },
-    saveUninitialized: false,
-    store,
-  })
-);
+};
+app.use(cors(corsOptions));
 
-app.use(passport.initialize());
-app.use(passport.session());
+const storageusers = multer.diskStorage({
+  destination: "./public/users",
+  filename: function (req, file, cb) {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const storagemedia = multer.diskStorage({
+  destination: "./public/reviewmedia",
+  filename: function (req, file, cb) {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const uploaduserimage = multer({ storage: storageusers });
+const uploadreviewimage = multer({ storage: storagemedia });
+app.use(cookieParser());
 const mongoose = require("mongoose");
 const path = require("path");
-const e = require("express");
+const { connect } = require("http2");
 const Schema = mongoose.Schema;
 mongoose
   .connect("mongodb://127.0.0.1:27017/MCODB")
@@ -42,6 +56,24 @@ mongoose
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+app.use(
+  session({
+    secret: "some-secret",
+    cookie: {secure: false},
+    resave: false, saveUninitialized: false,
+    store: MongoStore.create({        
+      mongoUrl: 'mongodb://127.0.0.1:27017/MCODB',
+    autoRemove: 'native' }),
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
 const userSchema = new Schema({
   firstName: String,
   lastName: String,
@@ -53,36 +85,13 @@ const userSchema = new Schema({
   imageurl: String,
 });
 
-
-userSchema.pre("save", function (next) {
-  var user = this;
-
-  // only hash the password if it has been modified (or is new)
-  if (!user.isModified("password")) return next();
-
-  // generate a salt
-  bcrypt.genSalt(getRandomInt(100), function (err, salt) {
-    if (err) return next(err);
-
-    // hash the password using our new salt
-    bcrypt.hash(user.password, salt, function (err, hash) {
-      if (err) return next(err);
-      // override the cleartext password with the hashed one
-      user.password = hash;
-      next();
-    });
-  });
-});
-
-userSchema.methods.comparePassword = async function comparePassword(data) {
-  return await bcrypt.compare(data, this.password)
-};
-
-userSchema.plugin(passportLocalMongoose);
-
+userSchema.plugin(passportLocalMongoose, {usernameQueryFields: ["email","username"]});
 const users = mongoose.model("User", userSchema);
 exports.users = users;
 
+passport.serializeUser(users.serializeUser()); 
+passport.deserializeUser(users.deserializeUser()); 
+passport.use(new LocalStrategy(users.authenticate())); 
 async function getusers() {
   const userquery = await users.find({});
   return JSON.stringify(userquery);
@@ -144,7 +153,6 @@ async function getavgrating(id) {
   val[0].fieldN = val[0].fieldN.toFixed(2);
   return val[0].fieldN;
 }
-
 async function getnumreviews(id) {
   var val = await reviews.aggregate([
     {
@@ -158,7 +166,6 @@ async function getnumreviews(id) {
   ]);
   return val[0].rating;
 }
-
 async function gethelpful(id) {
   var val = await reviewsratings.aggregate([
     {
@@ -174,7 +181,6 @@ async function gethelpful(id) {
   if (val[0]) return val[0].helpful;
   else return 0;
 }
-
 async function getunhelpful(id) {
   var val = await reviewsratings.aggregate([
     {
@@ -190,7 +196,6 @@ async function getunhelpful(id) {
   if (val[0]) return val[0].unhelpful;
   else return 0;
 }
-
 async function getfeaturedreviews(restaurant) {
   var val = await reviews.aggregate([
     {
@@ -222,7 +227,6 @@ async function getrestoreviews(id) {
     });
   return val;
 }
-
 async function getuserreviews(id) {
   var val;
   try {
@@ -245,52 +249,20 @@ async function getuserreviews(id) {
   }
   return val;
 }
-
-passport.use('local', new LocalStrategy(async(username, password, done) =>{
-  try{
-    users.findOne({ username: username }).then(async (user) => {
-      if (user) {
-        if(await user.comparePassword(password))
-{
-          found = true
-          return done(null, user);}
-      }else{
-        users.findOne({ email: username }).then(async(user2) => {
-          if (user2) {
-            if(await user2.comparePassword(password)){
-              return done(null, user2);
-            }
-            else{
-              return done(null, false);
-            }
-          }
-        });
-    }});
-      }
-      catch (err){
-        return done(null, false);
-  }
-}
-))
-
-passport.serializeUser((user, done)=>{
-  done(null, user._id);
-});
-passport.deserializeUser(async (id, done)=>{
-  users.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
-
-app.post(
-  "/home/login",
-  function (req, res, next) {
-    passport.authenticate('local', async function(err, user, info) {
-    if(user)
-      res.send({success: true, _id: user._id, isOwner: user.isOwner})
-    else
+app.post("/home/login", passport.authenticate('local'),
+  async function (req, res) {
+    if(req.user){
+        req.session.userid = req.user._id
+        req.session.remember = req.body.remember
+        if(!req.body.remember){
+          req.session.cookie.expires = false
+        }else{
+          req.session.cookie.maxAge = 21 * 24 * 60 * 60 * 1000
+        }
+      res.send({success: true, _id: req.user._id, isOwner : req.user.isOwner})
+    }else{
       res.send({success: false})
-  })(req, res, next);
+    }
 });
 
 app.post("/home/register/check", async function (req, res) {
@@ -298,35 +270,23 @@ app.post("/home/register/check", async function (req, res) {
   res.send(val);
 });
 
-const storageusers = multer.diskStorage({
-  destination: "./public/users",
-  filename: function (req, file, cb) {
-    cb(null, `${file.originalname}`);
-  },
-});
-
-const storagemedia = multer.diskStorage({
-  destination: "./public/reviewmedia",
-  filename: function (req, file, cb) {
-    cb(null, `${file.originalname}`);
-  },
-});
-
-const uploaduserimage = multer({ storage: storageusers });
-const uploadreviewimage = multer({ storage: storagemedia });
-
 app.post("/home/register", async function (req, res) {
-  newuser = new users();
-  newuser.firstName = req.body.firstName;
-  newuser.lastName = req.body.lastName;
-  newuser.email = req.body.email;
-  newuser.password = req.body.password;
-  newuser.username = req.body.username;
-  newuser.isOwner = false;
-  newuser.description = req.body.description;
-  newuser.save().then(function (result) {
-    res.send(String(result["_id"]));
-  });
+  let user =
+{  firstName : req.body.firstName,
+  lastName : req.body.lastName,
+  email : req.body.email,
+  username : req.body.username,
+  isOwner : false,
+  description : req.body.description,}
+
+  users.register(new users({  firstName : req.body.firstName,
+    lastName : req.body.lastName,
+    email : req.body.email,
+    username : req.body.username,
+    isOwner : false,
+    description : req.body.description,}), req.body.password, function (err, user) { 
+    res.send(String(user["_id"]));
+  })
 });
 
 app.post(
@@ -341,6 +301,24 @@ app.post(
     res.send(req.body);
   }
 );
+
+app.post("/rememberme", async function (req,res){
+  if(req.session.remember && req.user){
+    res.send({user: req.user, success: true})
+  }
+  else{
+    res.send({success: false})
+  }
+})
+
+app.post("/logged", async function (req,res){
+  if(req.user){
+    res.send({user: req.user, success: true})
+  }
+  else{
+    res.send({success: false})
+  }
+})
 
 app.post("/review", async function (req, res) {
   newreview = new reviews();
@@ -395,9 +373,35 @@ app.post("/user/:id/editprofile", async function (req, res) {
 });
 
 app.post("/user/:id/deleteprofile", async function (req, res) {
-  users.findByIdAndDelete(req.params.id).then(response =>
-    res.send(200)
-    )
+  reviews.deleteMany(
+    {
+        reviewerID: mongodb.ObjectId.createFromHexString(req.params.id)
+    }).then(
+        function () {
+            // Success
+            console.log("Data deleted");
+        }).catch(
+            function (error) {
+                // Failure
+                console.log(error);
+            }).then(response =>{
+              reviewsratings.deleteMany(
+                {
+                    reviewerID: mongodb.ObjectId.createFromHexString(req.params.id)
+                }).then(
+                    function () {
+                        // Success
+                        console.log("Data deleted");
+                    }).catch(
+                        function (error) {
+                            // Failure
+                            console.log(error);
+                        })
+            }).then(rsponse => {
+              users.findByIdAndDelete(req.params.id).then(response =>
+                res.send(200)
+                )
+            })
 });
 
 app.post(
@@ -412,8 +416,17 @@ app.post(
   }
 );
 
+app.post("/signout", async function (req,res) {
+  console.log("signed out")
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.send(200);
+  });
+})
 //all restaurants data
 app.get("/restaurants", async function (req, res) {
+  console.log("USER: " + req.user)
+  console.log("SESSION ID: "+req.sessionID)
   var val = await getrestaurants();
   res.send(val);
 });

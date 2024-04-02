@@ -17,13 +17,13 @@ import {Body as Edit} from './EditProfile'
 export const App = () => {
   return (
     <Routes>
-    <Route path="/home/register" element={<><Header/><Register/></>}/>
-    <Route path="/home/login" element={<><Header/><Login/></>}/>
-    <Route path="/home/main" element={<><Header/><View/></>}/>
-    <Route path="/home/form" element={<><Header/><Form/></>}/>
-    <Route path="/home/main/user/:id" element={<><Header/><User/></>}/>
-    <Route path="/home/main/restaurant/:restaurantid" element={<><Header/><Restaurant/></>}/>
-    <Route path="/home/main/user/editprofile" element={<><Header/><Edit/></>}></Route>
+    <Route path="/home/register" element={<><Header location="register" /><Register/></>} loader={{location: "register"}}/>
+    <Route path="/home/login" element={<><Header location="login"/><Login/></>}/>
+    <Route path="/home/main" element={<><Header location="home"/><View/></>}/>
+    <Route path="/home/form" element={<><Header location="form"/><Form/></>}/>
+    <Route path="/home/main/user/:id" element={<><Header location="profile"/><User/></>}/>
+    <Route path="/home/main/restaurant/:restaurantid" element={<><Header location="profile"/><Restaurant/></>}/>
+    <Route path="/home/main/user/editprofile" element={<><Header location="profile"/><Edit/></>}></Route>
     </Routes>
   );
 };

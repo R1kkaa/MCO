@@ -27,7 +27,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios'
 
-
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
     color: '#964B00',
@@ -147,14 +146,14 @@ function BoxSx() {
     if(selectedImage){
       data = {description: currdesc, newimage: true}
     }
-    axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile"), data).then(response => {
+    axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile"), data, {withCredentials: true}).then(response => {
       if(selectedImage){
         const newimage = new FormData(); 
         const filename = id.concat("_avatar.")
         const type = selectedImage.type.split("image/")[1]
         newimage.append('my-image-file', selectedImage, filename+type)
         newimage.append('id', response.data)
-        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload"), newimage).then(response2 => {
+        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload", {withCredentials: true}), newimage).then(response2 => {
           navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
         })
       }
