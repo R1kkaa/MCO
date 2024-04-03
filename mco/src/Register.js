@@ -2,10 +2,6 @@
 
 import React from 'react';
 import './css/index.css';
-import {Theme} from'./themes';
-import { Box, Typography} from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Typography} from '@mui/material';
@@ -145,7 +141,7 @@ function BoxSx() {
             }
             else{
               const newimage = new FormData(); 
-              const filename = String(response.data).concat("_review_media.")
+              const filename = String(response.data).concat("_avatar.")
               const type = selectedImage.type.split("image/")[1]
               newimage.append('my-image-file', selectedImage, filename+type)
               newimage.append('id', response.data)

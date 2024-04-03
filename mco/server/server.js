@@ -378,8 +378,28 @@ app.post("/user/:id/editprofile", async function (req, res) {
     res.send(document);
   });
 });
-
+``
 app.post("/user/:id/deleteprofile", async function (req, res) {
+  let reviewdocs = await reviews.find({reviewerID: mongodb.ObjectId.createFromHexString(req.params.id)})
+  reviewdocs.forEach(element => {
+    fs.unlink(
+      "./public" + element.imageurl,
+      (err) => err && console.error(err)
+    )
+    console.log(element._id)
+    reviewsratings.deleteMany(
+      {
+          reviewID: element._id
+      }).then(
+          function () {
+              // Success
+              console.log("Data deleted");
+          }).catch(
+              function (error) {
+                  // Failure
+                  console.log(error);
+              })
+  });
   reviews.deleteMany(
     {
         reviewerID: mongodb.ObjectId.createFromHexString(req.params.id)
@@ -404,8 +424,12 @@ app.post("/user/:id/deleteprofile", async function (req, res) {
                             // Failure
                             console.log(error);
                         })
-            }).then(rsponse => {
+            }).then(response => {
               users.findByIdAndDelete(req.params.id).then(response =>
+                fs.unlink(
+                  "./public" + response.imageurl,
+                  (err) => err && console.error(err)
+                ),
                 res.send(200)
                 )
             })
@@ -491,7 +515,23 @@ app.post("/reviews/:id/delete", async function (req, res) {
   reviews.findByIdAndDelete(req.params.id).then(async function (response) {
     let rating = await getavgrating(req.body.restaurantid);
     let numreviews = await getnumreviews(req.body.restaurantid);
-    restaurants
+    fs.unlink(
+      "./public" + response.imageurl,
+      (err) => err && console.error(err)
+    )
+    reviewsratings.deleteMany(
+      {
+          reviewID: mongodb.ObjectId.createFromHexString(req.params.id)
+      }).then(
+          function () {
+              // Success
+              console.log("Data deleted");
+          }).catch(
+              function (error) {
+                  // Failure
+                  console.log(error);
+              })
+        restaurants
       .findByIdAndUpdate(req.body.restaurantid, {
         avgrating: rating,
         numreviews: numreviews,
