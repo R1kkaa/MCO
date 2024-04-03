@@ -14,7 +14,7 @@ import { useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import  axios  from 'axios';
-
+import { useEffect } from 'react';
 export function Body(){
   return(
   <body>
@@ -53,8 +53,22 @@ function BoxSx() {
   const passwordRef = useRef();
   const [remember, setRemember] = useState(true)
   const [valid, setValid] = useState(1);
+
+  useEffect(() => {
+    const check = async () => {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          navigate("/home/main")
+        }
+      })
+    }
+    check()
+  });
+
   const loguser = () => {
     
+
+
     let data = {
       username: emailRef.current.value,
       password: passwordRef.current.value,

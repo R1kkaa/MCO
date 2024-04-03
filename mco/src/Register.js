@@ -2,6 +2,10 @@
 
 import React from 'react';
 import './css/index.css';
+import {Theme} from'./themes';
+import { Box, Typography} from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+
 import reportWebVitals from './reportWebVitals';
 import Carousel from './carousel'
 import { Box, Typography} from '@mui/material';
@@ -77,6 +81,14 @@ function BoxSx() {
     if (selectedImage) {
       setImageUrl(URL.createObjectURL(selectedImage));
     }
+    const check = async () => {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          navigate("/home/main")
+        }
+      })
+    }
+    check()
   }, [selectedImage]);
 
   function checkfields() {
@@ -126,15 +138,23 @@ function BoxSx() {
             username: usernameRef.current.value
           }
           axios.post('http://localhost:5000/home/register', data, {withCredentials: true}).then(response => {
-            const newimage = new FormData(); 
-            const filename = String(response.data).concat("_review_media.")
-            const type = selectedImage.type.split("image/")[1]
-            newimage.append('my-image-file', selectedImage, filename+type)
-            newimage.append('id', response.data)
-            axios.post('http://localhost:5000/home/register/upload', newimage, {withCredentials: true}).then(response2 => {
-              navigate("/home/login")
+            if(response.data.fail){
+              response.data.errors.forEach(element => {
+                alert(element.msg)
+              });
+            }
+            else{
+              const newimage = new FormData(); 
+              const filename = String(response.data).concat("_review_media.")
+              const type = selectedImage.type.split("image/")[1]
+              newimage.append('my-image-file', selectedImage, filename+type)
+              newimage.append('id', response.data)
+              axios.post('http://localhost:5000/home/register/upload', newimage, {withCredentials: true}).then(response2 => {
+                navigate("/home/login")
+                
             })
-          })
+          }
+        })
         }
       }, error => {
       console.log(error);

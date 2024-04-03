@@ -27,6 +27,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { VisuallyHiddenInput } from './Register';
 import { useRef } from 'react';
+import Delete from '@mui/icons-material/Delete';
 axios.defaults.withCredentials = true
 
 export const HeaderButton2 = styled(Button)(({ theme }) => ({
@@ -199,7 +200,8 @@ export class View extends React.Component {
       imageUrl: null,
       currreview: "",
       editreview: "",
-      searchparams: ""
+      searchparams: "",
+      ownerresponse: "",
     };
     }
     componentDidMount() {
@@ -289,6 +291,12 @@ export class View extends React.Component {
         editreview: e.target.value
     })
   }
+  editownerresponse = (e) => {
+    this.setState({
+      ownerresponse: e.target.value
+  })
+}
+
   editSearchParams = (e) => {
     this.setState({
       searchparams: e.target.value.toLowerCase().trim()
@@ -305,6 +313,25 @@ export class View extends React.Component {
         window.location.reload()
       })
     }
+    submitownerreply = (reviewIndex) => {
+      let review = {
+        reviewid: this.state.reviewslist[reviewIndex]["_id"],
+        ownerresponse: this.state.ownerresponse,
+      }
+      axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/replyowner"), review).then(response => {
+        window.location.reload()
+      })
+    }
+    deleteownerreply = (reviewIndex) => {
+      let review = {
+        reviewid: this.state.reviewslist[reviewIndex]["_id"],
+        ownerresponse: "",
+      }
+      axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/replyowner"), review).then(response => {
+        window.location.reload()
+      })
+    }
+
     submitdelete = (reviewIndex) => {
       let data = {
         restaurantid:this.state.restaurantid
@@ -416,9 +443,17 @@ export class View extends React.Component {
                     </Box>
                     <ButtonGroup variant="outlined" aria-label="Basic button group">
                       {
-                          this.state.isOwner && this.state.id !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.state.isOwner &&               
+                          this.state.isOwner && this.state.id !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.state.isOwner && review.ownerresponse == "" &&            
                            <Button color="secondary" variant="outlined" aria-label="Reply As Owner" startIcon={<AddCommentIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Reply As Owner</Typography></Button>
                       }{
+                        this.state.isOwner && this.state.id !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.state.isOwner && review.ownerresponse != "" &&            
+                         <Button color="secondary" variant="outlined" aria-label="Edit Reply As Owner" startIcon={<EditIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => handleExpandClick(reviewIndex)}>Edit Reply</Typography></Button>
+                    }
+                    {
+                        this.state.isOwner && this.state.id !=review.reviewerID &&  restaurants.owner == this.props.router.id && this.state.isOwner && review.ownerresponse != "" &&            
+                         <Button color="secondary" variant="outlined" aria-label="Edit Reply As Owner" endIcon={<DeleteIcon/>}><Typography variant="body" fontFamily="Roboto" onClick={() => this.deleteownerreply(reviewIndex)}>Delete Reply</Typography></Button>
+                    }
+                      {
                         this.state.id != "nouser" && this.state.id !=review.reviewerID && (
                               
                               /*mark helpful*/
@@ -458,10 +493,10 @@ export class View extends React.Component {
                         </Collapse>
 
                     {/*reply as owner*/}
-                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.state.isOwner && review.ownerresponse == ""} timeout="auto" unmountOnExit>
+                        <Collapse in={this.props.router.id == restaurants.owner && this.state.expandedId === reviewIndex && this.state.isOwner} timeout="auto" unmountOnExit>
                       {<Divider sx={{ marginTop:"10px", borderBottomWidth: 1, bgcolor: "#000000"}}/>}
-                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" sx={{width: '95%',margin:'10px'}}/>}
-                      <HeaderButton2>Reply As Owner</HeaderButton2>
+                      {<Input multiline rows={1} maxRows={5} id="user-comment" size="small" variant="filled" label="Reply As Owner" onChange={this.editownerresponse} defaultValue = {review.ownerresponse} sx={{width: '95%',margin:'10px'} }/>}
+                      <HeaderButton2 onClick={()=> this.submitownerreply(reviewIndex)}>Reply As Owner</HeaderButton2>
                         </Collapse>
                   </ReviewCard>
                 ))}

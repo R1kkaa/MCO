@@ -11,7 +11,7 @@ const cors = require("cors");
 const multer = require("multer");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser')
-const { check, ValidationResult } = require("express-validator");
+const { check, ValidationResult, validationResult } = require("express-validator");
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const bcrypt = require("bcrypt");
@@ -270,23 +270,30 @@ app.post("/home/register/check", async function (req, res) {
   res.send(val);
 });
 
-app.post("/home/register", async function (req, res) {
-  let user =
-{  firstName : req.body.firstName,
-  lastName : req.body.lastName,
-  email : req.body.email,
-  username : req.body.username,
-  isOwner : false,
-  description : req.body.description,}
-
-  users.register(new users({  firstName : req.body.firstName,
-    lastName : req.body.lastName,
-    email : req.body.email,
-    username : req.body.username,
-    isOwner : false,
-    description : req.body.description,}), req.body.password, function (err, user) { 
-    res.send(String(user["_id"]));
-  })
+app.post("/home/register", check('email').isEmail().withMessage("Email Invalid."), check('password').isLength({min: 8}).withMessage("Password must atleast be 8 characters."), async function (req, res) {
+  const errors = validationResult(req)
+  if(!errors.isEmpty()){
+    console.log(errors)
+    res.send({fail: true, errors: errors.array()})
+  }
+  else{
+    let user =
+    {  firstName : req.body.firstName,
+      lastName : req.body.lastName,
+      email : req.body.email,
+      username : req.body.username,
+      isOwner : false,
+      description : req.body.description,}
+    
+      users.register(new users({  firstName : req.body.firstName,
+        lastName : req.body.lastName,
+        email : req.body.email,
+        username : req.body.username,
+        isOwner : false,
+        description : req.body.description,}), req.body.password, function (err, user) { 
+        res.send(String(user["_id"]));
+      })
+  }
 });
 
 app.post(
@@ -492,6 +499,15 @@ app.post("/reviews/:id/delete", async function (req, res) {
       .then((response) => {
         res.send("deleted");
       });
+  });
+});
+
+app.post("/reviews/:id/replyowner", async function (req, res) {
+  reviews.findById(req.params.id).then(async function (document) {
+    document.ownerresponse = req.body.ownerresponse;
+    document.save().then(async function (response) {
+          res.send(document);
+    });
   });
 });
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/index.css';
+import './css/RestaurantPreview.css';
+
 import Header from './header';
 
 
@@ -13,6 +15,7 @@ import {Body as User} from './Profile';
 import {Body as Restaurant} from './ViewRestaurant';
 import {Body as Form} from './Form';
 import {Body as Edit} from './EditProfile'
+import {Body as About} from './About'
 
 export const App = () => {
   return (
@@ -24,6 +27,8 @@ export const App = () => {
     <Route path="/home/main/user/:id" element={<><Header location="profile"/><User/></>}/>
     <Route path="/home/main/restaurant/:restaurantid" element={<><Header location="profile"/><Restaurant/></>}/>
     <Route path="/home/main/user/editprofile" element={<><Header location="profile"/><Edit/></>}></Route>
+    <Route path="/home/about" element={<><Header location="about"/><About/></>}></Route>
+
     </Routes>
   );
 };

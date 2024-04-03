@@ -120,6 +120,7 @@ export default function Header(props) {
       <AppBar position="relative" style={{ background: 'transparent', boxShadow: 'none'}}>
         <Toolbar >
         <Box
+        onClick={()=>navigate("/home/about")}
       component="img"
       sx={{
         height: '60px',
@@ -147,20 +148,16 @@ export default function Header(props) {
           </Search>
           <span class="buttongroup2">
           <ThemeProvider theme={Theme}>
-          {currlocation != "home" &&          
+          {          
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/",{ state: { userid: id, isOwner: isOwner, currlocation: "home"}})}>
             Home</HeaderButton>}
-          {(currlocation == "home" || (currlocation == "profile" && id!="nouser")) &&
-          <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/form",{ state: { userid: id, isOwner: isOwner, currlocation: "form"}})}>
-          Submit Restaurant</HeaderButton>
-          }
             {id == "nouser" &&           
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/register">
           Register</HeaderButton>}
           {id == "nouser" &&          
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
           Login</HeaderButton>}
-          {currlocation != "profile" && id != "nouser" && !isOwner &&
+          {id != "nouser" && !isOwner &&
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})}>
           Profile </HeaderButton>
           }
