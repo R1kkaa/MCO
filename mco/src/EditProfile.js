@@ -153,13 +153,15 @@ function BoxSx() {
         const type = selectedImage.type.split("image/")[1]
         newimage.append('my-image-file', selectedImage, filename+type)
         newimage.append('id', response.data)
-        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload", {withCredentials: true}), newimage).then(response2 => {
+        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload", newimage, {withCredentials: true})).then(response2 => {
           navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
         })
       }
       else{
         navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
       }
+    }).catch(err => {
+      console.log(err)
     })
   }
   return (

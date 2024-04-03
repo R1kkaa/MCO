@@ -474,15 +474,26 @@ app.get("/restaurants/featured", async function (req, res) {
 //per restaurant data
 app.get("/restaurants/:id", async function (req, res) {
   var val = await restaurants
-    .findOne({ _id: req.params.id })
-    .catch((err) => res.send("ERROR 404"));
-  res.send(val);
+  .findOne({ _id: req.params.id }).then(response => {
+    if(response){
+      res.send(response);
+    }
+    else
+      {res.send({fail : true})}
+    })
+    .catch((err) => res.send({fail: true}))
 });
 
 //per restaurant review
 app.get("/restaurants/:id/reviews", async function (req, res) {
-  var val = await getrestoreviews(req.params.id);
-  res.send(val);
+  var val = await getrestoreviews(req.params.id).catch(err => {
+    if(err){
+      res.send({fail: true})
+    }
+    else{
+      res.send(val);
+    }
+  });
 });
 
 //get all reviews data
@@ -537,6 +548,7 @@ app.post("/reviews/:id/delete", async function (req, res) {
         numreviews: numreviews,
       })
       .then((response) => {
+        req.logOut()
         res.send("deleted");
       });
   });
@@ -605,9 +617,14 @@ app.post("/marks/:id", async function (req, res) {
 //user data
 app.get("/user/:id", async function (req, res) {
   var val = await users
-    .findOne({ _id: req.params.id })
-    .catch((err) => res.send("ERROR 404"));
-  res.send(val);
+    .findOne({ _id: req.params.id }).then(response => {
+    if(response){
+      res.send(response);
+    }
+    else
+      {res.send({fail : true})}
+    })
+    .catch((err) => res.send({fail: true}))
 });
 
 app.get("/user/:id/reviews", async function (req, res) {

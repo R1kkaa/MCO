@@ -207,17 +207,27 @@ export class View extends React.Component {
     componentDidMount() {
       axios.get("http://localhost:5000/restaurants/".concat(this.state.restaurantid)).then(response => 
       {
-        this.setState({
-          restaurants: response.data,
-        });
+        if(response.data.fail){
+          this.props.router.navigate("/home/main")
+        }
+        else{
+          this.setState({
+            restaurants: response.data,
+          });
+        }
           }, error => {
         console.log(error);
       });
       axios.get("http://localhost:5000/restaurants/".concat(this.state.restaurantid).concat("/reviews")).then(response => 
       {
-        this.setState({
-          reviewslist: response.data.reverse(),
-        });
+        if(response.data.fail){
+          this.props.router.navigate("/home/main")
+        }
+        else{
+          this.setState({
+            reviewslist: response.data.reverse(),
+          });
+        }
           }, error => {
         console.log(error);
       });

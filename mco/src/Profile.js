@@ -191,13 +191,18 @@ class BoxSx extends React.Component {
     componentDidMount() {
       axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser), {withCredentials: true}).then(response => 
       {
-        this.setState({
-          firstname: response.data.firstName,
-          lastname: response.data.lastName,
-          username: response.data.username,
-          description: response.data.description,
-          imagelocation: response.data.imageurl
-        });
+        if(response.data.fail){
+          this.props.router.navigate("/home/main")
+        }
+        else{
+          this.setState({
+            firstname: response.data.firstName,
+            lastname: response.data.lastName,
+            username: response.data.username,
+            description: response.data.description,
+            imagelocation: response.data.imageurl
+          });
+        }        
           }, error => {
         console.log(error);
       });
