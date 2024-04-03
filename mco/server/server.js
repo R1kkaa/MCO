@@ -486,14 +486,15 @@ app.get("/restaurants/:id", async function (req, res) {
 
 //per restaurant review
 app.get("/restaurants/:id/reviews", async function (req, res) {
-  var val = await getrestoreviews(req.params.id).catch(err => {
-    if(err){
-      res.send({fail: true})
-    }
-    else{
-      res.send(val);
-    }
-  });
+  var val = await getrestoreviews(req.params.id).catch(err => 
+    {
+      console.log(test)
+      if(err){
+        console.log(err)
+        res.send({fail: true})
+      }
+    })
+    res.send(val)
 });
 
 //get all reviews data
@@ -539,7 +540,6 @@ app.post("/reviews/:id/delete", async function (req, res) {
               console.log("Data deleted");
           }).catch(
               function (error) {
-                  // Failure
                   console.log(error);
               })
         restaurants
@@ -548,7 +548,6 @@ app.post("/reviews/:id/delete", async function (req, res) {
         numreviews: numreviews,
       })
       .then((response) => {
-        req.logOut()
         res.send("deleted");
       });
   });
