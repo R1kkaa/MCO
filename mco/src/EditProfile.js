@@ -106,13 +106,13 @@ function BoxSx() {
   const [searchParams, setSearchParams] = useSearchParams();
   let navigate = useNavigate();
   let location = useLocation();
-  var id = "nouser"
+  var [id, setID] = useState("nouser")
+  var [isOwner, setOwner] = useState("false")  
   var viewuser = "nouser"
   var imageurl = "https://media.istockphoto.com/id/969233490/photo/young-african-woman-smiling-at-sunset.jpg?s=612x612&w=0&k=20&c=G0cagT6s1rXm455ZN8TCReO1C78ua1xGJPXDi6eKGLA="
   var description = ""
   let descriptionRef = useRef("");  
   if(location.state){
-    id = location.state.userid
     description = location.state.description
     imageurl = location.state.imageurl
     viewuser = location.state.viewuser
@@ -129,6 +129,18 @@ function BoxSx() {
     else{
       setImg(imageurl)
     }
+    const check = async () => {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+            setID(response.data.user._id)
+            setOwner(response.data.user.isOwner)
+        }else{
+            setID("nouser")
+            setOwner(false)
+        }
+      })
+    }
+    check()
   }, [selectedImage]);
   
 
@@ -147,13 +159,16 @@ function BoxSx() {
       data = {description: currdesc, newimage: true}
     }
     axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile"), data, {withCredentials: true}).then(response => {
+      console.log("Link 1: " + "http://localhost:5000/user/".concat(id).concat("/editprofile"))
       if(selectedImage){
         const newimage = new FormData(); 
         const filename = id.concat("_avatar.")
         const type = selectedImage.type.split("image/")[1]
         newimage.append('my-image-file', selectedImage, filename+type)
         newimage.append('id', response.data)
-        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload", newimage, {withCredentials: true})).then(response2 => {
+        console.log(response.data)
+        console.log("Link 2: " + "http://localhost:5000/user/".concat(id).concat("/editprofile/upload"))
+        axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload"), newimage, {withCredentials: true}).then(response2 => {
           navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
         })
       }

@@ -369,14 +369,18 @@ app.post("/user/:id/editprofile", async function (req, res) {
   users.findById(req.params.id).then((document) => {
     document.description = req.body.description;
     if (req.body.newimage) {
-      fs.unlink(
-        "./public" + document.imageurl,
-        (err) => err && console.error(err)
-      );
+      try{
+        fs.unlink(
+          "./public" + document.imageurl,
+          (err) => err && console.error(err)
+        )
+      }catch(err){
+        console.log(err)
+      }
     }
     document.save();
-    res.send(document);
-  });
+    res.send(String(document["_id"]))
+    });
 });
 ``
 app.post("/user/:id/deleteprofile", async function (req, res) {
