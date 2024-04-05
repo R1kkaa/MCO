@@ -159,7 +159,6 @@ function BoxSx() {
       data = {description: currdesc, newimage: true}
     }
     axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile"), data, {withCredentials: true}).then(response => {
-      console.log("Link 1: " + "http://localhost:5000/user/".concat(id).concat("/editprofile"))
       if(selectedImage){
         const newimage = new FormData(); 
         const filename = id.concat("_avatar.")
@@ -167,7 +166,6 @@ function BoxSx() {
         newimage.append('my-image-file', selectedImage, filename+type)
         newimage.append('id', response.data)
         console.log(response.data)
-        console.log("Link 2: " + "http://localhost:5000/user/".concat(id).concat("/editprofile/upload"))
         axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload"), newimage, {withCredentials: true}).then(response2 => {
           navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
         })
