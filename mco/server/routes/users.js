@@ -137,12 +137,15 @@ function add(app, models) {
         } catch (err) {
           console.log(err);
         }
+        document.save();
+        res.send(String(document["_id"]));
+      }else{
+        document.save();
+        res.send(String(document["_id"]));
       }
-      document.save();
-      res.send(String(document["_id"]));
     });
   });
-  ``;
+
   app.post("/user/:id/deleteprofile", async function (req, res) {
     let reviewdocs = await reviews.find({
       reviewerID: mongodb.ObjectId.createFromHexString(req.params.id),

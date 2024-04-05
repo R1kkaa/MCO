@@ -165,9 +165,9 @@ function BoxSx() {
         const type = selectedImage.type.split("image/")[1]
         newimage.append('my-image-file', selectedImage, filename+type)
         newimage.append('id', response.data)
-        console.log(response.data)
         axios.post("http://localhost:5000/user/".concat(id).concat("/editprofile/upload"), newimage, {withCredentials: true}).then(response2 => {
           navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})
+          window.location.reload()
         })
       }
       else{
