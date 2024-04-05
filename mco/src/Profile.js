@@ -284,8 +284,9 @@ class BoxSx extends React.Component {
         <span>
           <div class="rightboxdiv">
             <div class="descriptioncontainer2">
-              <Typography variant="h6">Reviews and Comments</Typography>   
-              {reviewslist.map((review, reviewIndex) => (
+              {!this.state.isOwner && <Typography variant="h6">Reviews and Comments</Typography>}  
+              {this.state.isOwner && <Typography variant="h6">Owner Account</Typography>}    
+              {!this.state.isOwner && reviewslist.map((review, reviewIndex) => (
                   <span>
                   {ReviewBoxWithStar(review.review, review.rating, review.restaurant[0].restaurantName, review.edited, review.imageurl, review.restaurant[0].location)}
                   </span>
