@@ -2,6 +2,7 @@ const { reviews } = require("../schemas/reviews");
 const { reviewsratings } = require("../schemas/reviewsratings");
 const { users } = require("../schemas/users");
 const { restaurants } = require("../schemas/restaurants");
+const { mongodb } = require("../server");
 
 async function getusers() {
   const userquery = await users.find({});

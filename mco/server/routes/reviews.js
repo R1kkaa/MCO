@@ -7,6 +7,9 @@ function add(app, models) {
     getunhelpful,
   } = require("../utility/functions");
 
+  function catchError(err){
+    console.log(err)
+  }
   const { uploadreviewimage } = require("../utility/filehandling");
 
   const reviews = models["reviews"];
@@ -88,10 +91,6 @@ function add(app, models) {
       reviewsratings
         .deleteMany({
           reviewID: mongodb.ObjectId.createFromHexString(req.params.id),
-        })
-        .then(function () {
-          // Success
-          console.log("Data deleted");
         })
         .catch(function (error) {
           console.log(error);

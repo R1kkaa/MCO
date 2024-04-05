@@ -157,7 +157,7 @@ export default function Header(props) {
           {id == "nouser" &&          
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} href="/home/login">
           Login</HeaderButton>}
-          {id != "nouser" && !isOwner &&
+          {id != "nouser" &&
           <HeaderButton variant="outlined" style={{boxShadow: '2px 3px 5px #000000'}} onClick={()=>navigate("/home/main/user/".concat(id),{ state: { userid: id, viewuser: id, currlocation: "profile"}})}>
           Profile </HeaderButton>
           }

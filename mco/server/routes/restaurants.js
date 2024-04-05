@@ -9,8 +9,6 @@ function add(app, models) {
 
   //all restaurants data
   app.get("/restaurants", async function (req, res) {
-    console.log("USER: " + req.user);
-    console.log("SESSION ID: " + req.sessionID);
     var val = await getrestaurants();
     res.send(val);
   });
@@ -41,7 +39,6 @@ function add(app, models) {
   //per restaurant review
   app.get("/restaurants/:id/reviews", async function (req, res) {
     var val = await getrestoreviews(req.params.id).catch((err) => {
-      console.log(test);
       if (err) {
         console.log(err);
         res.send({ fail: true });
