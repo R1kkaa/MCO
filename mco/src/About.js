@@ -10,7 +10,7 @@ export function Body() {
     'Axios', 'Body-Parser', 'Concurrently', 'Connect-mongo', 'Cookie-parser', 'Cors',
     'Express', 'Express-session', 'File-loader', 'Fs', 'Material-UI (MUI)','Mongodb', 'Mongoose', 'Multer',
     'Nodemon', 'Passport', 'Passport-local', 'Pasport-local-mongoose', 'React', 'React-scripts',
-    'React-dom', 'React-fancy-circular-carousel', 'Stack', 'Type-face-roboto', 'Web-vitals'
+    'React-dom', 'React-router-dom', 'React-fancy-circular-carousel', 'Type-face-roboto'
   ];
 
   return (

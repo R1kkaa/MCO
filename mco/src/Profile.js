@@ -185,8 +185,9 @@ class BoxSx extends React.Component {
     };
     }
     delete(){
-      axios.post("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/deleteprofile"), {withCredentials: true})
-      this.props.router.navigate("/home/login")
+      axios.post("http://localhost:5000/user/".concat(this.props.router.viewuser).concat("/deleteprofile"), {withCredentials: true}).then(response => {
+        this.props.router.navigate("/home/login")
+      })
     }
     componentDidMount() {
       axios.get("http://localhost:5000/user/".concat(this.props.router.viewuser), {withCredentials: true}).then(response => 

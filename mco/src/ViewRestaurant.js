@@ -205,6 +205,19 @@ export class View extends React.Component {
     };
     }
     componentDidMount() {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          this.setState({
+            id: response.data.user._id,
+            isOwner: response.data.user.isOwner
+          })
+        }else{
+          this.setState({
+            id: "nouser",
+            isOwner: false
+          })
+        }
+      })
       axios.get("http://localhost:5000/restaurants/".concat(this.state.restaurantid)).then(response => 
       {
         if(response.data.fail){
@@ -231,19 +244,6 @@ export class View extends React.Component {
           }, error => {
         console.log(error);
       });
-      axios.post("http://localhost:5000/logged").then(response => {
-        if(response.data.success){
-          this.setState({
-            id: response.data.user._id,
-            isOwner: response.data.user.isOwner
-          })
-        }else{
-          this.setState({
-            id: "nouser",
-            isOwner: false
-          })
-        }
-      })
     }
     
     getFileInfo = (e) => {

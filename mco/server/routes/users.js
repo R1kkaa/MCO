@@ -6,7 +6,7 @@ function add(app, models) {
     check,
     validationResult,
   } = require("../server");
-  const { getusers, getuserreviews } = require("../utility/functions");
+  const { getusers, getuserreviews} = require("../utility/functions");
   const { uploaduserimage } = require("../utility/filehandling");
   const users = models["users"];
   const reviews = models["reviews"];
@@ -155,14 +155,9 @@ function add(app, models) {
         "./public" + element.imageurl,
         (err) => err && console.error(err)
       );
-      console.log(element._id);
       reviewsratings
         .deleteMany({
           reviewID: element._id,
-        })
-        .then(function () {
-          // Success
-          console.log("Data deleted");
         })
         .catch(function (error) {
           // Failure
@@ -172,10 +167,6 @@ function add(app, models) {
     reviews
       .deleteMany({
         reviewerID: mongodb.ObjectId.createFromHexString(req.params.id),
-      })
-      .then(function () {
-        // Success
-        console.log("Data deleted");
       })
       .catch(function (error) {
         // Failure

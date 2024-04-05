@@ -130,6 +130,8 @@ export class Preview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: "",
+      isOwner: false,
       restaurantslist: [],
       reviewslist: [],
       searchParams: "",
@@ -157,6 +159,19 @@ export class Preview extends React.Component {
     }
 
     componentDidMount() {
+      axios.post("http://localhost:5000/logged").then(response => {
+        if(response.data.success){
+          this.setState({
+            id: response.data.user._id,
+            isOwner: response.data.user.isOwner
+          })
+        }else{
+          this.setState({
+            id: "nouser",
+            isOwner: false
+          })
+        }
+      })
       axios.get("http://localhost:5000/restaurants", {withCredentials: true}).then(response => 
       {
         this.setState({
@@ -205,7 +220,7 @@ export class Preview extends React.Component {
     </Box>
     <Stack spacing={1} display="flex" flexDirection="column">
     {restaurantslist.map((item, index) => (
-      (item.restaurantName.toLowerCase().includes(this.props.router.query) ||  item.location.toLowerCase().includes(this.props.router.query)) && (item.avgrating >= this.state.filter) && <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.props.router.id, isOwner: this.props.router.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>
+      (item.restaurantName.toLowerCase().includes(this.props.router.query) ||  item.location.toLowerCase().includes(this.props.router.query)) && (item.avgrating >= this.state.filter) && <CardActionArea onClick={()=>this.props.router.navigate("/home/main/restaurant/".concat(item._id),{ state: { userid: this.state.id, isOwner: this.state.isOwner, restaurantid : item._id, currlocation: "restaurants"} })}>
       <Item hoverShadow={10}><Typography variant="h5" fontFamily="Roboto" fontWeight="300">
         {item.restaurantName}
       </Typography>
