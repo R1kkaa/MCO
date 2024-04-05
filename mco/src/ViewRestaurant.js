@@ -328,9 +328,13 @@ export class View extends React.Component {
         reviewid: this.state.reviewslist[reviewIndex]["_id"],
         ownerresponse: this.state.ownerresponse,
       }
-      axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/replyowner"), review).then(response => {
-        window.location.reload()
-      })
+      if(this.state.ownerresponse == ""){
+        alert("Response Cannot be Empty")
+      }else{
+        axios.post("http://localhost:5000/reviews/".concat(this.state.reviewslist[reviewIndex]["_id"]).concat("/replyowner"), review).then(response => {
+          window.location.reload()
+        })
+      }
     }
     deleteownerreply = (reviewIndex) => {
       let review = {
